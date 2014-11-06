@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using AssociationAnalysis.Apriori;
 using AssociationAnalysis.Properties;
 
 namespace AssociationAnalysis
@@ -14,7 +15,15 @@ namespace AssociationAnalysis
                                             u => Console.WriteLine("{0}:{1}", u.Key, u.Value)
                                        );
 
+            Apriori(dataSet);
+
             Console.ReadLine(); //Stop program so we can read output
+        }
+
+        private static void Apriori(DataSet data)
+        {
+            CompactDataSet cData = new CompactDataSet(data);
+            cData.printInfo();
         }
     }
 }
