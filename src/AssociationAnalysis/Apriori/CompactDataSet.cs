@@ -12,21 +12,24 @@ namespace AssociationAnalysis.Apriori
     /// </summary>
     class CompactDataSet
     {
-        private const bool verbose = true;
+        public bool Verbose { get; set; }
         
         public Dictionary<int, Dictionary<uint, int>> Data { get; private set; }
         public int Size { get; private set; }
 
-        public CompactDataSet(DataSet origData)
+        public CompactDataSet(DataSet origData) : this(origData, true) { }
+
+        public CompactDataSet(DataSet origData, bool verbose)
         {
+            Verbose = verbose;
             Data = new Dictionary<int, Dictionary<uint, int>>();
             Size = 0;
 
-            if (verbose) { Console.Write("Compacting Data: 0..."); }
+            if (Verbose) { Console.Write("Compacting Data: 0..."); }
 
             compact(origData.AssociationData);
 
-            if (verbose) { Console.WriteLine(); }
+            if (Verbose) { Console.WriteLine(); }
         }
 
         /// <summary>
@@ -38,7 +41,7 @@ namespace AssociationAnalysis.Apriori
             int iteration = 1;
             foreach (var elem in origData)
             {
-                if (verbose && iteration % 10000 == 0)
+                if (Verbose && iteration % 10000 == 0)
                     Console.Write("\rCompacting Data: " + iteration + "... ");
 
                 uint bElem = binarize(elem);
@@ -74,8 +77,29 @@ namespace AssociationAnalysis.Apriori
             }
 
             Size = iteration;
-            if (verbose)
+            if (Verbose)
                 Console.Write("\rCompacting Data: " + iteration + "... Done");
+        }
+
+        /// <summary>
+        /// Compute the support count for an item set of length len.
+        /// Setting len=1 will compare against everything, but is inefficient.
+        /// </summary>
+        /// <param name="bElem">The item set to calculate the support count for.</param>
+        /// <param name="len">The number of items in bElem.</param>
+        /// <returns>The support count for bElem.</returns>
+        public int calcSupport(uint bElem, int len)
+        {
+            int supportCount = 0;
+            foreach (int key in Data.Keys.Where(n => n >= len).OrderBy(n => n))
+            {
+                foreach (uint currentElem in Data[key].Keys)
+                {
+                    if (isSubset(bElem, currentElem))
+                        supportCount += Data[key][currentElem];
+                }
+            }
+            return supportCount;
         }
 
         /// <summary>

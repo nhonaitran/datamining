@@ -22,9 +22,11 @@ namespace AssociationAnalysis
 
         private static void Apriori(DataSet data)
         {
-            var cData = new CompactDataSet(data);
-            var miner = new AprioriMiner(cData);
+            bool verbose = true;
+            var cData = new CompactDataSet(data) { Verbose = verbose };
+            var miner = new AprioriMiner(cData) { MinSupport = 0.01, Verbose = verbose };
             cData.printInfo();
+            miner.mine();
         }
     }
 }
