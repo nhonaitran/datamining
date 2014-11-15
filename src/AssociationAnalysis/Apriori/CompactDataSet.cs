@@ -111,6 +111,17 @@ namespace AssociationAnalysis.Apriori
         }
 
         /// <summary>
+        /// Is A a subset of B?
+        /// </summary>
+        /// <param name="A">A bit field representing an element.</param>
+        /// <param name="B">A bit field representing an element.</param>
+        /// <returns>true if A is a subset of B.</returns>
+        public static bool isSubset(uint A, uint B)
+        {
+            return (A | B) == B;
+        }
+
+        /// <summary>
         /// Print broad information about the segregated data set.
         /// </summary>
         public void printInfo()

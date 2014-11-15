@@ -33,8 +33,14 @@ namespace AssociationAnalysis
 
             char[] separators = {' ', '\r'}; //carriage returns and extra space are at the end of every line
             SequentialData = rawData.Select(u => u.Split(separators, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse));
-            AssociationData = rawData.Select(u => u.Split(separators, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).Distinct().Where(n => n != 1).OrderBy(x => x)).Where(u => u.Count() > 0);
-            NumberOfTransactions = rawData.Count;
+            AssociationData = rawData.
+                Select(u => u.Split(separators, StringSplitOptions.RemoveEmptyEntries).
+                    Select(int.Parse)           
+                    .Distinct()                 //Distinct pages for association. ie 1,4,2,3,4 => 1,4,2,3
+                    .Where(n => n != 1))        //Discard front page
+                .Where(u => u.Count() > 0);     //Discard empty elements created by removing the front page
+
+            NumberOfTransactions = rawData.Count; // != AssociationData.Count due to front page removal
         }
 
         public void CreateBinaryRepresentation() {

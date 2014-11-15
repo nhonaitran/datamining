@@ -22,7 +22,8 @@ namespace AssociationAnalysis
 
         private static void Apriori(DataSet data)
         {
-            CompactDataSet cData = new CompactDataSet(data);
+            var cData = new CompactDataSet(data);
+            var miner = new AprioriMiner(cData);
             cData.printInfo();
         }
     }
