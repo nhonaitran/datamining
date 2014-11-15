@@ -33,7 +33,7 @@ namespace AssociationAnalysis
 
             char[] separators = {' ', '\r'}; //carriage returns and extra space are at the end of every line
             SequentialData = rawData.Select(u => u.Split(separators, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse));
-            AssociationData = rawData.Select(u => u.Split(separators, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).Distinct().OrderBy(x => x));
+            AssociationData = rawData.Select(u => u.Split(separators, StringSplitOptions.RemoveEmptyEntries).Select(int.Parse).Distinct().Where(n => n != 1).OrderBy(x => x)).Where(u => u.Count() > 0);
             NumberOfTransactions = rawData.Count;
         }
 

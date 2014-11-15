@@ -20,20 +20,13 @@ namespace AssociationAnalysis.Apriori
         public CompactDataSet(DataSet origData)
         {
             Data = new Dictionary<int, Dictionary<uint, int>>();
-            Size = origData.NumberOfTransactions;
+            Size = 0;
 
-            if (verbose)
-            {
-                Console.Write("Compacting Data: 0 / " + Size);
-            }
+            if (verbose) { Console.Write("Compacting Data: 0..."); }
 
             compact(origData.AssociationData);
 
-            if (verbose)
-            {
-                Console.WriteLine();
-                Console.WriteLine("Done Compacting Data.");
-            }
+            if (verbose) { Console.WriteLine(); }
         }
 
         /// <summary>
@@ -46,7 +39,7 @@ namespace AssociationAnalysis.Apriori
             foreach (var elem in origData)
             {
                 if (verbose && iteration % 10000 == 0)
-                    Console.Write("\rCompacting Data: " + iteration + " / " + Size);
+                    Console.Write("\rCompacting Data: " + iteration + "... ");
 
                 uint bElem = binarize(elem);
 
@@ -77,11 +70,12 @@ namespace AssociationAnalysis.Apriori
                     }
                 }
 
-                if (verbose) iteration++;
+                iteration++;
             }
 
+            Size = iteration;
             if (verbose)
-                Console.Write("\rCompacting Data: " + iteration + " / " + Size);
+                Console.Write("\rCompacting Data: " + iteration + "... Done");
         }
 
         /// <summary>
@@ -89,7 +83,7 @@ namespace AssociationAnalysis.Apriori
         /// </summary>
         /// <param name="element">A list of distinct integers (elements between 1 and 32)</param>
         /// <returns>A uint bitfield representing the list</returns>
-        private uint binarize(IEnumerable<int> element)
+        public static uint binarize(IEnumerable<int> element)
         {
             uint bElem = 0;
             foreach (int item in element)
@@ -97,6 +91,23 @@ namespace AssociationAnalysis.Apriori
                 bElem += 1U << (item - 1);
             }
             return bElem;
+        }
+
+        /// <summary>
+        /// Convert a bit field into a list of distinct integers representing each bit.
+        /// </summary>
+        /// <param name="bElem">A bitfield representing a list of distinct integers.</param>
+        /// <returns>The list obtained from the bitfield.</returns>
+        public static IList<int> unbinarize(uint bElem)
+        {
+            var elem = new List<int>();
+            for (int i = 0; i < 32; i++)
+            {
+                uint mask = 1U << i;
+                if ((bElem & mask) != 0)
+                    elem.Add(i + 1);
+            }
+            return elem;
         }
 
         /// <summary>
