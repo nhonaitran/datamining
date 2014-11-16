@@ -103,6 +103,32 @@ namespace AssociationAnalysis.Apriori
         }
 
         /// <summary>
+        /// Compute the interest (lift) measure for the rule X -> Y.
+        /// </summary>
+        /// <param name="x">The antecedent itemset.</param>
+        /// <param name="lenx">The size of the antecedent itemset. (Can default to 1, but results in more comparisons)</param>
+        /// <param name="y">The consequent itemset.</param>
+        /// <param name="leny">The size of the consequent itemset. (Can default to 1, but results in more comparisons)</param>
+        /// <returns>The interest (lift) measure for the rule X -> Y.</returns>
+        public double calcInterest(uint x, int lenx, uint y, int leny)
+        {
+            return (Size * calcSupport(x | y, Math.Min(lenx, leny))) / ((double)(calcSupport(x, lenx) * calcSupport(y, leny)));
+        }
+
+        /// <summary>
+        /// Compute the confidence measure for the rule X -> Y.
+        /// </summary>
+        /// <param name="x">The antecedent itemset.</param>
+        /// <param name="lenx">The size of the antecedent itemset. (Can default to 1, but results in more comparisons)</param>
+        /// <param name="y">The consequent itemset.</param>
+        /// <param name="leny">The size of the consequent itemset. (Can default to 1, but results in more comparisons)</param>
+        /// <returns>The confidence measure for the rule X -> Y.</returns>
+        public double calcConfidence(uint x, int lenx, uint y, int leny)
+        {
+            return calcSupport(x | y, Math.Min(lenx, leny)) / ((double)calcSupport(x, lenx));
+        }
+
+        /// <summary>
         /// Convert a list of distinct integers (all elements between 1 and 32) into a bit field.
         /// </summary>
         /// <param name="element">A list of distinct integers (elements between 1 and 32)</param>
