@@ -24,7 +24,7 @@ namespace AssociationAnalysis
         {
             bool verbose = true;
             var cData = new CompactDataSet(data) { Verbose = verbose };
-            var miner = new AprioriMiner(cData) { MinSupport = 0.01, Verbose = verbose };
+            var miner = new AprioriMiner(cData) { MinSupport = 0.01, MinConfidence = 0.3, Verbose = verbose };
             cData.printInfo();
             miner.mine();
         }

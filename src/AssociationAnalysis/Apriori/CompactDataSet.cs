@@ -16,12 +16,14 @@ namespace AssociationAnalysis.Apriori
         
         public Dictionary<int, Dictionary<uint, int>> Data { get; private set; }
         public int Size { get; private set; }
+        public Dictionary<int, string> Headers { get; private set; }
 
         public CompactDataSet(DataSet origData) : this(origData, true) { }
 
         public CompactDataSet(DataSet origData, bool verbose)
         {
             Verbose = verbose;
+            Headers = origData.DataHeaders;
             Data = new Dictionary<int, Dictionary<uint, int>>();
             Size = 0;
 
@@ -112,7 +114,7 @@ namespace AssociationAnalysis.Apriori
         /// <returns>The interest (lift) measure for the rule X -> Y.</returns>
         public double calcInterest(uint x, int lenx, uint y, int leny)
         {
-            return (Size * calcSupport(x | y, Math.Min(lenx, leny))) / ((double)(calcSupport(x, lenx) * calcSupport(y, leny)));
+            return calcConfidence(x, lenx, y, leny) / ((double)calcSupport(y, leny) / (double)Size);
         }
 
         /// <summary>
@@ -158,6 +160,16 @@ namespace AssociationAnalysis.Apriori
                     elem.Add(i + 1);
             }
             return elem;
+        }
+
+        /// <summary>
+        /// Convert a bit field into a list of headers, where a header is the string represented by a bit in the bit field.
+        /// </summary>
+        /// <param name="bElem">A bitfield representing a list of distinct integers.</param>
+        /// <returns>The list of headers obtained from the bitfield.</returns>
+        public IEnumerable<string> asHeaders(uint bElem)
+        {
+            return unbinarize(bElem).Select(u => Headers[u]);
         }
 
         /// <summary>

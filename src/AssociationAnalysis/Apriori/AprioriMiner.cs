@@ -31,6 +31,23 @@ namespace AssociationAnalysis.Apriori
             }
         }
 
+        private double _MinConfidence = 0;
+        /// <summary>
+        /// Value in [0,1] for the minimum confidence measure a rules needs to not be pruned.
+        /// </summary>
+        public double MinConfidence
+        {
+            get
+            {
+                return _MinConfidence;
+            }
+            set
+            {
+                if (value < 0 || value > 1) throw new ArgumentOutOfRangeException("MinConfidence", "MinConfidence must be in the interval [0,1].");
+                else this._MinConfidence = value;
+            }
+        }
+
         /// <summary>
         /// Create a new Apriori Miner
         /// </summary>
@@ -49,12 +66,25 @@ namespace AssociationAnalysis.Apriori
             
             if (Verbose)
             {
-                Console.WriteLine("Frequent Item Sets: ");
+                Console.WriteLine("Frequent Item Sets (" + MinSupport * 100 + "% Min Support): ");
                 foreach (int key in freqItemSets.Keys.OrderBy(n => n))
                     foreach (uint bElem in freqItemSets[key].OrderBy(n => n))
                     {
-                        Console.WriteLine(String.Join(",", CompactDataSet.unbinarize(bElem)));
+                        Console.WriteLine("\t" + String.Join(", ", DataSet.asHeaders(bElem)));
                     }
+            }
+
+            var rules = generateRules(freqItemSets);
+
+            if (Verbose)
+            {
+                Console.WriteLine("Generated Rules (" + MinConfidence * 100 + "% Min Confidence): ");
+                foreach (var rule in rules)
+                {
+                    var ante = String.Join(", ", DataSet.asHeaders(rule.Antecedant));
+                    var conq = String.Join(", ", DataSet.asHeaders(rule.Consequent));
+                    Console.WriteLine("\t" + ante + " -> " + conq + "\t Conf=" + string.Format("{0:0.0000}", rule.Confidence) + "\t Lift=" + string.Format("{0:0.0000}", rule.Lift));
+                }
             }
         }
 
@@ -66,7 +96,6 @@ namespace AssociationAnalysis.Apriori
         {
             var freqItemSets = new Dictionary<int, IList<uint>>();
             int minSupportCount = (int)(_MinSupport * DataSet.Size);
-            Console.WriteLine(minSupportCount);
 
             //Initialize with length 1 frequent item sets.
             freqItemSets[1] = new List<uint>();
@@ -133,6 +162,72 @@ namespace AssociationAnalysis.Apriori
             }
 
             return matched == len; //If matched != len, then one itemset was somehow bigger than the other.
+        }
+
+        /// <summary>
+        /// Generate all rules from frequent itemsets with at least the minimum required confidence.
+        /// </summary>
+        /// <param name="freqItemSets">The frequent item sets to generate rules from.</param>
+        /// <returns>All rules from frequent itemsets with at least the minimum required confidence.</returns>
+        private IList<AssociationRule> generateRules(Dictionary<int, IList<uint>> freqItemSets)
+        {
+            var rules = new List<AssociationRule>();
+            foreach (int size in freqItemSets.Keys.OrderBy(n => n).Where(n => n >= 2))
+            {
+                foreach (uint bElem in freqItemSets[size])
+                {
+                    //Get rules with size 1 consequents
+                    var startRules = generateSingleConsequentRulesFromItemSet(bElem, size);
+                    rules.AddRange(startRules);
+
+                    //Genereate rules with larger consequents
+                    for (int conqSize = 2; conqSize < size && startRules.Count > 1; conqSize++)
+                    {
+                        var newRules = new List<AssociationRule>();
+
+                        //Iterate over pairs of rules with conqSize-1 size consequents.
+                        for (int i = 0; i < startRules.Count - 1; i++)
+                            for (int j = i + 1; j < startRules.Count; j++)
+                            {
+                                AssociationRule rule1 = startRules[i], rule2 = startRules[j];
+                                if (shouldCombine(rule1.Consequent, rule2.Consequent, conqSize - 2)) //Should we combine the consequents?
+                                {
+                                    uint conq = rule1.Consequent | rule2.Consequent; //Form new merged consequent.
+                                    var rule = new AssociationRule(bElem & ~conq, size - conqSize, conq, conqSize, DataSet);
+                                    if (rule.Confidence >= MinConfidence) //Accept the rule if it meets required threshold.
+                                        newRules.Add(rule);
+                                }
+                            }
+
+                        rules.AddRange(newRules);
+                        startRules = newRules; //We will generate the next round of rules from the rules generated this round.
+                    }   
+                }
+            }
+            return rules;
+        }
+
+        /// <summary>
+        /// Generate rules from an item set where the rules have a size 1 consequent.
+        /// Only rules with confidence at least MinConfidence will be returned.
+        /// </summary>
+        /// <param name="bElem">The frequent item set to generate rules from</param>
+        /// <param name="size">The size of the frequent item set.</param>
+        /// <returns>Rules of the form Y-X -> X where Y is the item set, |X|=1, and confidence(Y-X -> X) >= MinConfidence.</returns>
+        private IList<AssociationRule> generateSingleConsequentRulesFromItemSet(uint bElem, int size)
+        {
+            var rules = new List<AssociationRule>();
+            for (int i = 0; i < 32; i++) //32 bits in uint
+            {
+                uint mask = 1U << i;
+                if ((bElem & mask) != 0)
+                {
+                    var rule = new AssociationRule(bElem & ~mask, size - 1, mask, 1, DataSet);
+                    if (rule.Confidence >= MinConfidence)
+                        rules.Add(rule);
+                }
+            }
+            return rules;
         }
     }
 }
