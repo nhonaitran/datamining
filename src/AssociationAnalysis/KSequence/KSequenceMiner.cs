@@ -78,7 +78,7 @@ namespace AssociationAnalysis.KSequence
                     }
                     prevNode = node;
                 }
-                if (newSequence.Count() > K)
+                if (newSequence.Count() >= K)
                 {
                     distinctSequences.Add(newSequence);
                 }
