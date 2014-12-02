@@ -1,7 +1,7 @@
 # load necessary libraries
 library(ggplot2) 
 library(arules)
-
+library(arulesViz)
 ##########################################
 ## Unique page hits excluding frontpage
 ##########################################
