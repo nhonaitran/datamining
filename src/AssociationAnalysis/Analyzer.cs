@@ -21,8 +21,12 @@ namespace AssociationAnalysis
                                             u => Console.WriteLine("{0}:{1}", u.Key, u.Value)
                                        );
             // Apriori(dataSet);
-            Markov(dataSet);
-            KSequence(dataSet, 5, .01, false);
+            // Markov(dataSet);
+            /*
+               KSequence(dataSet, 3, .01, true);
+               Console.WriteLine("-----");
+               KSequence(dataSet, 3, .01, false);
+            */
 
             Console.ReadLine(); //Stop program so we can read output
         }
