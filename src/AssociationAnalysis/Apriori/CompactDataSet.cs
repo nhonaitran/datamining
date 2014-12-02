@@ -78,7 +78,7 @@ namespace AssociationAnalysis.Apriori
                 iteration++;
             }
 
-            Size = iteration;
+            Size = iteration - 1;
             if (Verbose)
                 Console.Write("\rCompacting Data: " + iteration + "... Done");
         }
