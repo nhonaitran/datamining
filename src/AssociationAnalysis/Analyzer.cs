@@ -5,6 +5,8 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using AssociationAnalysis.Apriori;
+using AssociationAnalysis.KSequence;
+using AssociationAnalysis.Markov;
 using AssociationAnalysis.Properties;
 
 namespace AssociationAnalysis
@@ -19,14 +21,15 @@ namespace AssociationAnalysis
                                             u => Console.WriteLine("{0}:{1}", u.Key, u.Value)
                                        );
             // Apriori(dataSet);
-            // Markov(dataSet);
+            Markov(dataSet);
+            KSequence(dataSet, 5, .01, false);
 
             Console.ReadLine(); //Stop program so we can read output
         }
 
         private static void Apriori(DataSet data)
         {
-            Stopwatch stopwatch = new Stopwatch(); 
+            Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             bool verbose = true;
             var cData = new CompactDataSet(data) { Verbose = verbose };
@@ -45,27 +48,18 @@ namespace AssociationAnalysis
 
         private static void Markov(DataSet data)
         {
-            var previousNode = 0;
-            var nonDistinctNavigations = data.SequentialData.Where(d => d.Count() > 1);
-            var visitMatrix = new int[data.DataHeaders.Count + 1, data.DataHeaders.Count + 1];
+            (new MarkovMiner() { DataSet = data }).Mine();
+        }
 
-            foreach (var node in nonDistinctNavigations.SelectMany(navigationList => navigationList))
+        private static void KSequence(DataSet data, int k, double minimumSupport, bool filterRepeatedNavigations = true)
+        {
+            (new KSequenceMiner
             {
-                visitMatrix[previousNode, node]++;
-                previousNode = node;
-            }
-
-            var stringBuilder = new StringBuilder();
-
-            for (var i = 1; i < data.DataHeaders.Count + 1; i++)
-            {
-                for (var j = 1; j < data.DataHeaders.Count + 1; j++)
-                {
-                    stringBuilder.Append(visitMatrix[i, j] + ",");
-                }
-                Console.WriteLine(stringBuilder.ToString().Trim(','));
-                stringBuilder.Clear();
-            }
+                DataSet = data,
+                FilterRepeatedNavigations = filterRepeatedNavigations,
+                K = k,
+                MinimumSupport = minimumSupport
+            }).Mine();
         }
     }
 }
