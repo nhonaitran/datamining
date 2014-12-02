@@ -192,11 +192,11 @@ def process_results(freq_seqs, item_list):
     
     
 # %%
-import time, csv
+import time
 
 t0 = time.clock()
 print 'Start mining!'
-filename = 'msnbc990928.seq'
+filename = 'msnbc_mini.seq'
 item_list = ['frontpage', 'news', 'tech', 'local', 'opinion', 'on-air', 'misc', 'weather', 'msn-news', 'health', 'living', 'business', 'msn-sports', 'sports', 'summary', 'bbs', 'travel']
 
 # Load data
@@ -204,12 +204,12 @@ seqs = read_seq_file(filename)
 load_t = time.clock()
 
 # Mine for seqs
-freq_seqs = freq_seq_enum(seqs, 0.01,len(seqs))
+freq_seqs = freq_seq_enum(seqs, 0.2,len(seqs))
 sorted(freq_seqs)
 final_results = process_results(freq_seqs, item_list)
 for result in final_results:
     print result
-
+   
 # Run statistics
 mine_t = time.clock()
 print 'Done mining!'
@@ -220,10 +220,3 @@ print 'Load data time = ', load_t-t0
 print 'Mining time = ', mine_t-load_t
 print 'Total time = ', mine_t-t0
 print '\n'
-
-# Send results to CSV file, use | as the separator
-# In Excel you should be able to organize them in order of support.
-
-
-
-
