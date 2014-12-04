@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 01 17:59:30 2014
-MCT's python sequence mining solution. First try: use code from a random 
-person on the internet.
+MCT's python sequence mining demo.
 
-Couldn't get it to extract correctly (probably designed for Linux), so I'll just copy/paste the relevent functions in...
+Sequential code from Bart Dagenais
+https://github.com/bartdag/pymining
 
 Usage:
 >>> from pymining import seqmining
@@ -18,12 +18,8 @@ Usage:
 
 
 @author: mtho199
-Code from Bart Dagenais
-https://github.com/bartdag/pymining
-
 """
 from collections import defaultdict
-import os
 
 def return_letter_code(item):
     if item == '1':

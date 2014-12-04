@@ -1,16 +1,24 @@
 # -*- coding: utf-8 -*-
 """
 Created on Mon Dec 01 17:59:30 2014
-MCT's python sequence mining solution. First try: use code from a random 
-person on the internet.
+Python sequence mining solution.
 
-Couldn't get it to extract correctly (probably designed for Linux), so I'll just copy/paste the relevent functions in...
+Sequential code from Bart Dagenais
+https://github.com/bartdag/pymining
+
+Changes from original package:
+*Added functions: return_letter_code, read_seq_file, process_results, and csv_writer
+*Modified how support is calculated in _local_freq_items
+support = items[item]/float(data_len)
+to
+support = items[item]
+
 
 Usage:
 >>> from pymining import seqmining
-    >>> seqs = ( 'caabc', 'abcb', 'cabc', 'abbca')
-    >>> freq_seqs = seqmining.freq_seq_enum(seqs, 2)
-    >>> sorted(freq_seqs)
+>>> seqs = ( 'caabc', 'abcb', 'cabc', 'abbca')
+>>> freq_seqs = seqmining.freq_seq_enum(seqs, 2)
+>>> sorted(freq_seqs)
     [(('a',), 4), (('a', 'a'), 2), (('a', 'b'), 4), (('a', 'b', 'b'), 2), (('a', 'b', 'c'), 4), 
      (('a', 'c'), 4), (('b',), 4), (('b', 'b'), 2), (('b', 'c'), 4), (('c',), 4), (('c', 'a'), 3), 
      (('c', 'a', 'b'), 2), (('c', 'a', 'b', 'c'), 2), (('c', 'a', 'c'), 2), (('c', 'b'), 3), 
@@ -18,12 +26,13 @@ Usage:
 
 
 @author: mtho199
-Code from Bart Dagenais
-https://github.com/bartdag/pymining
+
+
 
 """
 from collections import defaultdict
-import os
+import csv, time
+
 
 def return_letter_code(item):
     if item == '1':
@@ -72,9 +81,14 @@ def read_seq_file(filename):
         
         split_line = line.split()
         for index in range(0,len(split_line)):
+            if split_line[index] == '1':
+                # Remove front page
+                continue
             letter = return_letter_code(split_line[index])
-#            split_line[index] = letter
             record = record + letter
+        if record == '':
+            continue
+        
         data_list.append(record)
     f.close()
     return tuple(data_list)
@@ -187,13 +201,16 @@ def process_results(freq_seqs, item_list):
         final_results.append((new_sequence, support))
     
     return final_results
-    
-    
+
+
+def csv_writer(data, path):
+    with open(path, "wb") as csv_file:
+        writer = csv.writer(csv_file, delimiter='|')
+        for line in data:
+            writer.writerow(line)
     
     
 # %%
-import time, csv
-
 t0 = time.clock()
 print 'Start mining!'
 filename = 'msnbc990928.seq'
@@ -221,9 +238,9 @@ print 'Mining time = ', mine_t-load_t
 print 'Total time = ', mine_t-t0
 print '\n'
 
-# Send results to CSV file, use | as the separator
-# In Excel you should be able to organize them in order of support.
-
+# Send results to CSV file (use | as the separator)
+path = "output.csv"
+csv_writer(final_results, path)
 
 
 
