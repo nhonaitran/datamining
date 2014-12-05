@@ -22,11 +22,11 @@ namespace AssociationAnalysis
                                        );
             // Apriori(dataSet);
             // Markov(dataSet);
-            /*
+            
                KSequence(dataSet, 3, .01, true);
                Console.WriteLine("-----");
                KSequence(dataSet, 3, .01, false);
-            */
+            
 
             Console.ReadLine(); //Stop program so we can read output
         }
