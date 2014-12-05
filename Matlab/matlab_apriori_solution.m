@@ -1,5 +1,7 @@
 % Script to do the project.
 % By MCT
+% FindRules from  Narine Manukyan
+% See: http://www.mathworks.com/matlabcentral/fileexchange/42541-association-rules
 
 % Read the  data, translate into rows and columns
 % will have N rows, 17 columns, one for each category
@@ -12,10 +14,11 @@ cd ..
 cd Matlab
 
 fseek(f,191,'bof'); % start at the beginning of the data file
-
-records = [];
+TOTAL_RECORDS = 989818;
+records = zeros(TOTAL_RECORDS,17);
 tic
-while 1
+
+for line = 1:TOTAL_RECORDS
 	tline = fgets(f);
 	% TLINE should be a string holding a list of the page topic numbers
 	if tline == -1
@@ -25,11 +28,11 @@ while 1
 	create_record_command = sprintf('record = [%s];', tline);
 	eval(create_record_command);
 	
-	dataline = zeros(1,17); % expecting 17 different topics
-
-	dataline(record) = 1;
-	
-	records = [records; dataline];
+    records(line,record) = 1;
+    if mod(line,10000) == 0
+        fprintf('Line = %d\n', line)
+        toc
+    end
 end
 fclose(f);
 save('msnbc_matlab_matrix','records')
@@ -51,12 +54,11 @@ fprintf('Done building data matrix\n')
 % Apriori mining parameters
 minSup = 0.0001;
 minConf = 0.5;
-nRules = 20;
+nRules = 100;
 sortFlag = 1; % 1 sorts resulting rules by support, 2 sorts resulting rules by confidence
-fname = 'mini_msn_apriori_result'; % Results will be output in a more readable form to "fname".txt
+fname = 'msn_apriori_result'; % Results will be output in a more readable form to "fname".txt
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-datestr(now)
 fprintf('Running FINDRULES...')
 tic
 [Rules, FreqItemsets] = findRules(records, minSup, minConf, nRules, sortFlag, categories, fname);
@@ -64,5 +66,5 @@ fprintf('...Done\n')
 toc
 disp(['See the file named ' fname '.txt for the association rules']);
 
-type mini_msn_apriori_result.txt
+type msn_apriori_result.txt
 save('Apriori_results')
