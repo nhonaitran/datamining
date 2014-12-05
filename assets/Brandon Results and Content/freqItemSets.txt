@@ -1,0 +1,60 @@
+Frequent Item Sets (1% Min Support): 
+
+news
+tech
+local
+opinion
+on-air
+misc
+weather
+msn-news
+health
+living
+business
+msn-sports
+sports
+summary
+travel
+news, tech
+news, local
+tech, local
+news, opinion
+news, on-air
+tech, on-air
+local, on-air
+news, misc
+local, misc
+on-air, misc
+news, weather
+local, weather
+on-air, weather
+news, msn-news
+tech, msn-news
+local, msn-news
+on-air, msn-news
+misc, msn-news
+news, health
+tech, health
+local, health
+on-air, health
+news, living
+tech, living
+local, living
+on-air, living
+news, business
+tech, business
+local, business
+on-air, business
+msn-news, business
+health, business
+living, business
+misc, msn-sports
+news, sports
+tech, sports
+local, sports
+on-air, sports
+misc, sports
+business, sports
+msn-sports, sports
+on-air, summary
+news, local, misc
