@@ -1,0 +1,62 @@
+   lhs            rhs            support confidence     lift
+1  {news}      => {frontpage} 0.07383058  0.4261835 1.376920
+2  {business}  => {frontpage} 0.04267318  0.3848890 1.243505
+3  {local}     => {frontpage} 0.03872488  0.3219136 1.040043
+4  {sports}    => {frontpage} 0.03837206  0.3258910 1.052894
+5  {misc}      => {frontpage} 0.03599320  0.4523313 1.461399
+6  {misc}      => {on-air}    0.03289387  0.4133815 1.926623
+7  {living}    => {frontpage} 0.03233942  0.5681199 1.835490
+8  {misc}      => {local}     0.02671299  0.3357056 2.790665
+9  {health}    => {frontpage} 0.02594112  0.5186737 1.675739
+10 {health}    => {news}      0.01747329  0.3493657 2.016697
+11 {living}    => {news}      0.01716296  0.3015088 1.740445
+12 {local,                                                  
+    news}      => {frontpage} 0.01637232  0.6016780 1.943911
+13 {frontpage,                                              
+    local}     => {news}      0.01637232  0.4227854 2.440508
+14 {business,                                               
+    news}      => {frontpage} 0.01534250  0.6619196 2.138540
+15 {business,                                               
+    frontpage} => {news}      0.01534250  0.3595349 2.075398
+16 {news,                                                   
+    on-air}    => {frontpage} 0.01492939  0.5941396 1.919555
+17 {frontpage,                                              
+    on-air}    => {news}      0.01492939  0.3769150 2.175724
+18 {news,                                                   
+    tech}      => {frontpage} 0.01453110  0.5813301 1.878170
+19 {frontpage,                                              
+    tech}      => {news}      0.01453110  0.4406846 2.543830
+20 {local,                                                  
+    misc}      => {frontpage} 0.01443128  0.5402346 1.745398
+21 {frontpage,                                              
+    misc}      => {local}     0.01443128  0.4009446 3.332986
+22 {frontpage,                                              
+    local}     => {misc}      0.01443128  0.3726616 4.683287
+23 {summary}   => {on-air}    0.01386992  0.4806164 2.239981
+24 {living,                                                 
+    news}      => {frontpage} 0.01294486  0.7542324 2.436786
+25 {frontpage,                                              
+    living}    => {news}      0.01294486  0.4002812 2.310604
+26 {misc,                                                   
+    news}      => {frontpage} 0.01279760  0.6501155 2.100403
+27 {frontpage,                                              
+    misc}      => {news}      0.01279760  0.3555562 2.052431
+28 {opinion}   => {frontpage} 0.01220067  0.4940569 1.596207
+29 {health,                                                 
+    news}      => {frontpage} 0.01193283  0.6829186 2.206384
+30 {frontpage,                                              
+    health}    => {news}      0.01193283  0.4599970 2.655310
+31 {news,                                                   
+    sports}    => {frontpage} 0.01185476  0.6325142 2.043537
+32 {frontpage,                                              
+    sports}    => {news}      0.01185476  0.3089425 1.783355
+33 {misc,                                                   
+    on-air}    => {frontpage} 0.01108783  0.3370790 1.089040
+34 {frontpage,                                              
+    misc}      => {on-air}    0.01108783  0.3080535 1.435727
+35 {local,                                                  
+    misc}      => {news}      0.01025864  0.3840320 2.216806
+36 {misc,                                                   
+    news}      => {local}     0.01025864  0.5211367 4.332123
+37 {local,                                                  
+    news}      => {misc}      0.01025864  0.3770021 4.737835
