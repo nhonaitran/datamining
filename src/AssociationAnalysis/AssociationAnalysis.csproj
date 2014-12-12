@@ -47,6 +47,7 @@
     <Compile Include="Apriori\AssociationRule.cs" />
     <Compile Include="Apriori\CompactDataSet.cs" />
     <Compile Include="DataSet.cs" />
+    <Compile Include="Item.cs" />
     <Compile Include="KSequence\KSequenceMiner.cs" />
     <Compile Include="Markov\MarkovMiner.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,6 +56,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="Transaction.cs" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
