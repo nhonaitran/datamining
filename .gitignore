@@ -156,7 +156,5 @@ $RECYCLE.BIN/
 .DS_Store
 .Rproj.user
 
-## Ignore RStudio temporary files
-*.RData
-*.Rhistory
+
 
