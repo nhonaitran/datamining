@@ -9,66 +9,69 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.svm import SVC, l1_min_c
 from sklearn.grid_search import GridSearchCV
 from sklearn.cross_validation import cross_val_score
+import collections
 
 def fitWithLogisticRegression(X, y, cv_fold):
+    print("Logistic Regression")
+
     C_range = l1_min_c(X, y, loss='log') * np.logspace(1, 6)
-    print C_range
-    
-    print("  Fit using Logistic Regression \n \t C \t Accuracy")
+        
     best_acc = 0.0
     best_c = 1.0
-
     for c in C_range:
         scores = cross_val_score(LogisticRegression(C=c, penalty='l1'), X, y, scoring='accuracy', cv=cv_fold)
-        print("\t %4.2f \t %0.3f" % (c, scores.mean()))
+        print '{:10.3f} for [C: {:0.5f}]'.format(scores.mean(), c)
         if (scores.mean() > best_acc):
             best_acc = scores.mean()
             best_c = c
     
-    print(" Best: \t %4.2f \t %0.3f" % (best_c, best_acc))
+    print 'Best {:5.3f} for [C: {:0.5f}]'.format(best_acc, best_c)
     return(best_acc, best_c)
 
 def fitWithDecisionTree(X, y, cv_fold):
-    #print("Accuracy \t Depth \t Min Leaf")
+    print("Decision Tree")
+    
     depth_range = np.arange(3, 11, 1)
     min_samples_leaf_range = np.arange(1, 5, 1)
 
     best_acc = 0.0
-    best_depth = 1.0
-    best_min_leaf = 1.0
+    best_depth = 1
+    best_min_leaf = 1
 
     for depth in depth_range:
         for min_leaf in min_samples_leaf_range:
-            #print("%0.3f \t\t\t\t %d \t\t\t\t\t %d" % (score, depth, min_leaf))
             scores = cross_val_score(DecisionTreeClassifier(max_depth=depth, min_samples_leaf=min_leaf), X, y, scoring='accuracy', cv=cv_fold)
+            print '{:10.3f} for [Depth: {:3d}; Minimumn Leaf:{:3d}] '.format(scores.mean(), best_depth, best_min_leaf )
             if (scores.mean() > best_acc):
                 best_acc = scores.mean()
                 best_depth = depth
                 best_min_leaf = min_leaf
                 
+    print 'Best {:5.3f} for [Depth: {:3d}; Minimumn Leaf:{:3d}] '.format(best_acc, best_depth, best_min_leaf)
     return(best_acc, best_depth, best_min_leaf)
 
 def fitUsingSVM(X, y, k, cv_fold):
-    C_range = 10.0 ** np.arange(-2, 5)
-    #print "Kernel:", k
-    if (k == 'linear'):
-        # Tune SVM with linear kernel using exhaustive grid search
-        param_grid = dict(C=C_range)
+    print("Support Vector Machines ")
     
+    C_range = l1_min_c(X, y, loss='log') * np.logspace(0, 7)
+    
+    if (k == 'linear'):
+        param_grid = dict(C=C_range)
     elif (k == 'rbf'):
-        # Tune SVM with RBF kernel using exhaustive grid search
         gamma_range = 10.0 ** np.arange(-5, 4)
         param_grid = dict(gamma=gamma_range, C=C_range)
     else:
-        # Tune SVM with polynomial kernel using exhaustive grid search
         degree_range = np.arange(2, 8)
         param_grid = dict(degree=degree_range, C=C_range)
 
-    #print param_grid
+    # Tune SVM using exhaustive grid search
     grid = GridSearchCV(SVC(kernel=k), param_grid=param_grid, cv=cv_fold)
     grid.fit(X, y)
-    #print grid.best_score_
     
+    for params, mean_score, scores in grid.grid_scores_:
+        print("%10.3f for %r" % (mean_score, params))
+ 
+    print("Best %5.3f for %r" % (grid.best_score_, grid.best_params_))
     return(grid.best_score_)
   
 def plotColumns(X):
@@ -93,13 +96,15 @@ def plotHist(df):
         plt.ylabel('Frequency')
 
 def printPerfs(perf):
+    od = collections.OrderedDict(sorted(perf.items()))
+
     fig = plt.figure()
     ax = fig.add_subplot(111)  
-    ax.bar(range(len(perf)), perf.values(), width=0.5, align='center')
+    ax.bar(range(len(od)), od.values(), width=0.5, align='center')
     ax.set_title('Generalization Performance Comparison\n Prostate Cancer Data Set')
     ax.set_ylabel('Classifiers')
-    ax.set_xticks(range(len(perf)))
-    ax.set_xticklabels(perf.keys(), rotation=90)
+    ax.set_xticks(range(len(od)))
+    ax.set_xticklabels(od.keys(), rotation=90)
     ax.grid(b='on')
     plt.show()
 
@@ -117,19 +122,20 @@ y = df.iloc[:, -1]
 cv_fold = 10
 perf = dict()
 accuracy, C = fitWithLogisticRegression(X, y, cv_fold)
-perf["LR_BASE"] = accuracy #0.940909090909 #
+perf["LR_BASE"] = accuracy #
 
-#accuracy, depth, min_leaf = fitWithDecisionTree(X, y, cv_fold)
-#perf["DT_BASE"] = 0.841818181818 #accuracy
-#print perf
+accuracy, depth, min_leaf = fitWithDecisionTree(X, y, cv_fold)
+perf["DT_BASE"] = accuracy #
 
-#perf["SVM_LIN_BASE"] = 0.921568627451 #fitUsingSVM(X, y, 'linear', cv_fold)
-#perf["SVM_RBF_BASE"] = 0.509803921569 #fitUsingSVM(X, y, 'rbf', cv_fold)
-#perf["SVM_POLY_BASE"] = 0.911764705882 #fitUsingSVM(X, y, 'poly', cv_fold)
-#print perf
+perf["SVM_LIN_BASE"] = fitUsingSVM(X, y, 'linear', cv_fold) # 0.921568627451 #
+perf["SVM_RBF_BASE"] = 0.509803921569 #fitUsingSVM(X, y, 'rbf', cv_fold)
+perf["SVM_POLY_BASE"] = 0.911764705882 #fitUsingSVM(X, y, 'poly', cv_fold)
 
-#printPerfs(perf)
+printPerfs(perf)
 
+maxx = max(perf.values())             #finds the max value
+keys = [x for x,y in perf.items() if y ==maxx]
+print 'classifier(s): ', keys, 'with highest accuracy:', maxx
 # normalize all columns to range -1 and 1.
 #X_norm = (X - X.mean()) / (X.max() - X.min())
 #X_norm = preprocessing.normalize(X)
