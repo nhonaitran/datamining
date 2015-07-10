@@ -3,10 +3,11 @@ from pyspark import SparkContext, SparkConf
 import sys
 
 def keyValuePairMapper(word):
-    """Transform word to a key/value pair"""
+    """Transform word to a key/value pair."""
     return (word, 1)
 
 def formatter(x):
+    '''Transform key/value pair to a string.'''
     return(x[0]+' '+str(x[1]))
 
 def main(sc, *args):
@@ -25,12 +26,12 @@ def main(sc, *args):
                     .map(keyValuePairMapper) \
                     .reduceByKey(add)
 
-        # Sort results, map results to specific format, and then
+        # Sort results, map results to specific format
         formatted = wordsCount \
                     .sortByKey() \
                     .map(formatter)
 
-        # Save to file
+        # Save formatted results to file
         formatted.saveAsTextFile(outputFile)
 
         print("Completed successfully!")
@@ -50,5 +51,4 @@ if __name__ == '__main__':
     # Initialize the spark context
     conf = SparkConf().setAppName("WordsTweeted")
     sc = SparkContext(conf=conf)
-    #sc = SparkContext(appName="PythonMedian", conf=SparkConf().set("spark.driver.host", "localhost"))
     main(sc, *sys.argv[1:])

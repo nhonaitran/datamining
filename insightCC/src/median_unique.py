@@ -9,7 +9,6 @@ def trailingSpaceRemover(line):
     return(line.strip())
 
 def keyValuePairMapper(pair):
-    """Transform word to a key/value pair"""
     return (pair[1], len(set(pair[0].split(" "))))
 
 #def computeMedians(filename, data):
@@ -20,10 +19,9 @@ def computeMedians(data):
     n = data.count()
     value = data.first()[1]
     v = [value]
-    #medians = sc.accumulator(value)
     medians = [value]
     for i in range(1, n):
-        # get the word count of the current line
+        # get the word count of the current line.
         value = data.filter(lambda x: x[0] == i).map(lambda x: x[1]).collect()[0]
 
         # determine the index where the new count value is inserted
@@ -32,7 +30,7 @@ def computeMedians(data):
         # insert into list at the specified position, allowing the list still be sorted.
         bisect.insort(v, value)
 
-        # compute median accordingly
+        # compute median dependent on whether the length of the list is even or odd number.
         m = len(v)
         if m % 2 == 0:
             i = m // 2
@@ -42,10 +40,8 @@ def computeMedians(data):
             median = v[i-1]
 
         medians.append(median)
-        #medians.add(median)
 
     return(sc.parallelize(medians))
-    #return(medians)
 
 def main(sc, *args):
     print("Computing tweets median:")
@@ -53,17 +49,21 @@ def main(sc, *args):
         inputFile = args[0]
         outputFile = args[1]
 
+        # read file and create a base RDD
         lines = sc \
                   .textFile(inputFile) \
                   .map(trailingSpaceRemover) \
                   .filter(nonBlankLine)
 
+        # transform base RDD consisting of pairs of line number and words count for each tweet
         wordsCount = lines \
                     .zipWithIndex() \
                     .map(keyValuePairMapper)
 
+        # compute running median as each line is processed
         runningMedians = computeMedians(wordsCount)
 
+        # save computed values to file
         runningMedians.saveAsTextFile(outputFile)
 
         print("Completed successfully!")
