@@ -20,9 +20,9 @@ The reason there are many files instead of single "ft1.txt" and "ft2.txt" files 
 
 To run the programs as iPython notebooks, you can do the followings:
 <ol>
-<li>Create empty iPython notebook for each feature.</li>
-<li>copy all code except everything below the <b>"if __name__ == '__main__':"</b> line from corresponding python file. </li>
-<li>Remove "def main(sc, *args):" function definition</li>
+<li>Create empty iPython notebook for each feature,</li>
+<li>copy all code except everything below the <b>"if __name__ == '__main__':"</b> line from corresponding python file,</li>
+<li>Remove "def main(sc, *args):" function definition</li>,
 <li>change these two lines to reflect the appropriate file path:</br>
       inputFile = args[0]</br>
       outputFile = args[1]</li>
