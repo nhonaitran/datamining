@@ -29,4 +29,4 @@ To run the programs as iPython notebooks, you can do the followings:
 <li>Make sure that the web app hosting iPython notebook already has a spark context created and running.</li>
 </ol>
 
-That's it.  
+And that's all folks!  Happy coding...
