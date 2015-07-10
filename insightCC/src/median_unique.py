@@ -11,7 +11,6 @@ def trailingSpaceRemover(line):
 def keyValuePairMapper(pair):
     return (pair[1], len(set(pair[0].split(" "))))
 
-#def computeMedians(filename, data):
 def computeMedians(data):
     # since we are processing the file sequentially, this implementation inserts the new counts into a list while maintaining the list in sorted order.
     # This allows fast calculation of the median by looking up either the middle element for odd number of lines or average of the middle two elements for even number of lines being processed.
