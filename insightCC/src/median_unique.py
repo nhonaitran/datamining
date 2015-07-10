@@ -1,74 +1,85 @@
-import numpy as np
+import bisect
+import sys
+from pyspark import SparkContext, SparkConf
 
-def nonempty(line):
-    return(len(line)>0)
+def nonBlankLine(line):
+    return(len(line) > 0)
 
-def load(filename):
-    """Reads in content of the specified file, and maps each line to (line number, words count appeared in the line) pair."""
-    wordCounts = sc \
-                  .textFile(filename) \
-                  .filter(nonempty) \
-                  .zipWithIndex() \
-                  .map(lambda x: (x[1], len(set(x[0].strip().split(" ")))))
-    return(wordCounts)
+def trailingSpaceRemover(line):
+    return(line.strip())
 
-# def save(filename, data):
-#     sc \
-#     .parallelize(data) \
-#     .saveAsTextFile(filename)
+def keyValuePairMapper(pair):
+    """Transform word to a key/value pair"""
+    return (pair[1], len(set(pair[0].split(" "))))
 
-def save(filename, val):
-    with open(filename, "a") as f:
-        f.write(str(val)+"\n")
+#def computeMedians(filename, data):
+def computeMedians(data):
+    # since we are processing the file sequentially, this implementation inserts the new counts into a list while maintaining the list in sorted order.
+    # This allows fast calculation of the median by looking up either the middle element for odd number of lines or average of the middle two elements for even number of lines being processed.
+    #'TODO: Need to push the medians list to worker thread though.... driver will get filled up otherwise.
+    n = data.count()
+    value = data.first()[1]
+    v = [value]
+    #medians = sc.accumulator(value)
+    medians = [value]
+    for i in range(1, n):
+        # get the word count of the current line
+        value = data.filter(lambda x: x[0] == i).map(lambda x: x[1]).collect()[0]
 
-def updateTweetsMedian(infile, outfile):
-    wordsPerLine = load(infile)
-    n = wordsPerLine.count()
-    [save(outfile, \
-        np.median( \
-        wordsPerLine \
-        .filter(lambda x: x[0] <= i)
-        .sortByKey() \
-        .values() \
-        .collect() \
-    )) for i in range(n)]
+        # determine the index where the new count value is inserted
+        position = bisect.bisect(v, value)
 
+        # insert into list at the specified position, allowing the list still be sorted.
+        bisect.insort(v, value)
 
-# def loadTweetByLine(fileName):
-#     with open(fileName) as f:
-#         content =  f.read().splitlines()
-#     data = [len(set(line.split())) for line in content]
-#     return(data)
-#
-#
-# def updateTweetsMedian(infile, outfile):
-#     try:
-#         wordsPerLine = loadTweetByLine(infile)
-#         n = len(wordsPerLine)
-#         [save(outfile, np.median(wordsPerLine[0:i])) for i in range(1,n+1)]
-#     except (OSError, IOError) as e:
-#         print(e)
-#         raise
+        # compute median accordingly
+        m = len(v)
+        if m % 2 == 0:
+            i = m // 2
+            median = (v[i-1] + v[i]) / 2.0
+        else:
+            i = (m + 1) // 2
+            median = v[i-1]
+
+        medians.append(median)
+        #medians.add(median)
+
+    return(sc.parallelize(medians))
+    #return(medians)
+
+def main(sc, *args):
+    print("Computing tweets median:")
+    try:
+        inputFile = args[0]
+        outputFile = args[1]
+
+        lines = sc \
+                  .textFile(inputFile) \
+                  .map(trailingSpaceRemover) \
+                  .filter(nonBlankLine)
+
+        wordsCount = lines \
+                    .zipWithIndex() \
+                    .map(keyValuePairMapper)
+
+        runningMedians = computeMedians(wordsCount)
+
+        runningMedians.saveAsTextFile(outputFile)
+
+        print("Completed successfully!")
+
+    except (Exception) as e:
+        print(e)
+        print("Stopped.")
+
+    sc.stop()
 
 if __name__ == '__main__':
-    import sys
-    import os.path
-    from pyspark import SparkContext, SparkConf
 
     if len(sys.argv) < 3:
         print("Usage: python %s <input_file_name> <output_file_name>" % sys.argv[0], file=sys.stderr)
         exit(-1)
 
-    inputFile = sys.argv[1]
-    outputFile = sys.argv[2]
-
-    sc = SparkContext(appName="PythonMedian", conf=SparkConf().set("spark.driver.host", "localhost"))
-
-    print("Computing tweets median:")
-    try:
-        updateTweetsMedian(inputFile, outputFile)
-        print("Completed successfully!")
-    except:
-        print("Stopped.")
-
-    sc.stop()
+    conf = SparkConf().setAppName("MedianUnique")
+    sc = SparkContext(conf=conf)
+    main(sc, *sys.argv[1:])
