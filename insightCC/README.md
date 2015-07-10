@@ -7,7 +7,7 @@ These python standalone programs implement the following two features:
 <li>Calculate the median number of <em>unique</em> words per tweet, and update this median as tweets come in. </li>
 </ol>
 
-The programs requires spark 1.4 compiled package.  They are designed to run in local mode, or as iPython notebook with small changes (see how-to notes below).  These have been tested on Mac OS machine only however.
+The programs requires spark 1.4 compiled package.  They can be executed as iPython notebook with small changes (see how-to notes below).  
 
 Below is instructions on to execute the programs on Mac OS or linux-based systems.  Note, you must do step #1 to ensure the programs to run properly.
 <ol>
