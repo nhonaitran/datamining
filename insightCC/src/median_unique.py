@@ -30,13 +30,13 @@ def computeMedians(data):
         bisect.insort(v, value)
 
         # compute median dependent on whether the length of the list is even or odd number.
-        m = len(v)
+        m = i+1
         if m % 2 == 0:
-            i = m // 2
-            median = (v[i-1] + v[i]) / 2.0
+            j = m // 2
+            median = (v[j-1] + v[j]) / 2.0
         else:
-            i = (m + 1) // 2
-            median = v[i-1]
+            j = (m + 1) // 2
+            median = v[j-1]
 
         medians.append(median)
 
