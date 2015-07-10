@@ -12,7 +12,7 @@ The programs requires spark 1.4 compiled package.  They are designed to run in l
 Below is instructions on to execute the programs on Mac OS or linux-based systems.  Note, you must do step #1 to ensure the programs to run properly.
 <ol>
 <li>Open the run.sh file in a text editor, change the two places labeled "&lt;full_path_to_spark_root_dir&gt;" to the directory where you current have spark-1.4, save changes and close file.  See examples shown in comments.</li>
-<li>Open Terminal, cd to "insightCC" directory and type "sh" run.sh to kick off the script. </li>
+<li>Open Terminal, cd to "insightCC" directory and type "sh run.sh" to kick off the script. </li>
 </ol>
 
 Successful execution should produce two directories called <b>"ft1.txt"</b> and <b>"ft2.txt"</b> in the "tweet_output" folder.  In these directories, there should be many text file labeled "part-0000*", which contains the results of the features.
