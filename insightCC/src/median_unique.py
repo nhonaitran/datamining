@@ -11,10 +11,20 @@ def trailingSpaceRemover(line):
 def keyValuePairMapper(pair):
     return (pair[1], len(set(pair[0].split(" "))))
 
-def computeMedians(data):
-    # since we are processing the file sequentially, this implementation inserts the new counts into a list while maintaining the list in sorted order.
-    # This allows fast calculation of the median by looking up either the middle element for odd number of lines or average of the middle two elements for even number of lines being processed.
-    #'TODO: Need to push the medians list to worker thread though.... driver will get filled up otherwise.
+def computeRollingMedians(data):
+        """
+    Since we are processing the file sequentially, this implementation inserts the new counts into a list
+    while maintaining the list in sorted order. This allows fast calculation of the median by looking up
+    either the middle element for odd number of lines or average of the middle two elements for even number
+    of lines being processed.
+    TODO: Need to push the medians list to worker thread though.... driver will get filled up otherwise.
+
+    Ars:
+        data (int): the RDD containing the words count in each tweet.
+
+    Returns:
+        a RDD (float): a RDD consisting of the rolling median as each word count is processed.
+    """
     n = data.count()
     value = data.first()[1]
     v = [value]
@@ -60,7 +70,7 @@ def main(sc, *args):
                     .map(keyValuePairMapper)
 
         # compute running median as each line is processed
-        runningMedians = computeMedians(wordsCount)
+        runningMedians = computeRollingMedians(wordsCount)
 
         # save computed values to file
         runningMedians.saveAsTextFile(outputFile)
