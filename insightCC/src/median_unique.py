@@ -18,6 +18,7 @@ def computeRollingMedians(data):
     either the middle element for odd number of lines or average of the middle two elements for even number
     of lines being processed.
     TODO: Need to push the medians list to worker thread though.... driver will get filled up otherwise.
+        need to change from processing line by line, using accumulator?
 
     Ars:
         data (int): the RDD containing the words count in each tweet.
