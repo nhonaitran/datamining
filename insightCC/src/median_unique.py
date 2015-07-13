@@ -12,7 +12,7 @@ def keyValuePairMapper(pair):
     return (pair[1], len(set(pair[0].split(" "))))
 
 def computeRollingMedians(data):
-        """
+    """
     Since we are processing the file sequentially, this implementation inserts the new counts into a list
     while maintaining the list in sorted order. This allows fast calculation of the median by looking up
     either the middle element for odd number of lines or average of the middle two elements for even number
@@ -20,10 +20,8 @@ def computeRollingMedians(data):
     TODO: Need to push the medians list to worker thread though.... driver will get filled up otherwise.
         need to change from processing line by line, using accumulator? broadcast the rdd and then use linenum in
         each key/value pair to compute median up to that linenum.
-
     Ars:
         data (int): the RDD containing the words count in each tweet.
-
     Returns:
         a RDD (float): a RDD consisting of the rolling median as each word count is processed.
     """
