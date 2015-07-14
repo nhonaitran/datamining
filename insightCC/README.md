@@ -33,4 +33,4 @@ And that's all folks!  Happy coding...
 
 <h2>Notes:</h2>
 After I have submitted the repo, I was able to improve my previous implementation for the rolling medians feature taking advantage of pyspark broadcast variable. </br>
-The new implementation is in the "median_unique_fast.py" file.  If you are interested executing this program, uncomment the third command on line#7 in the run.sh file to run it.
+The new implementation is in the "median_unique_fast.py" file.  Just uncomment the third command on line #7 in the run.sh file to run it.
