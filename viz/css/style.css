@@ -1,0 +1,58 @@
+body {
+  font: 14px/16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+text {
+  fill: #222;
+  stroke: none;
+}
+
+
+.land {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 0.03em;
+}
+
+.state-boundary {
+  fill: none;
+  stroke: #bbb;
+}
+
+.map {
+  fill: none;
+  stroke: #fff;
+  stroke-width: 0.03em;
+  stroke-linejoin: round;
+}
+
+.legend {
+  fill: none;
+  stroke: #ddd;
+  stroke-width: 0.03em;
+}
+
+#legend text{
+  font-size: 12px;
+}
+
+#tooltip {
+  position: absolute;
+  background-color: white;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 3px;
+  text-align: center;
+  width: 150px;
+  font-size: 12px;
+  box-shadow: 0px 0px 5px 0px rgba(0,0,0,0.25);
+  pointer-events: none;
+}
+
+#tooltip strong{
+  font-size: 16px;
+}
+
+#tooltip span{
+  color: #999;
+}
