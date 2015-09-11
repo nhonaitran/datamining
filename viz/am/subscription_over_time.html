@@ -12,7 +12,27 @@
 		<!--[if lte IE 8]><script src="assets/js/ie/html5shiv.js"></script><![endif]-->
 		<link rel="stylesheet" href="assets/css/main.css" />
 		<link rel="stylesheet" href="assets/css/map.css" />
+		<link rel="stylesheet" href="assets/css/d3.slider.css" />
 		<!--[if lte IE 8]><link rel="stylesheet" href="assets/css/ie8.css" /><![endif]-->
+		<style>
+		.bubble {
+		  fill: brown;
+		  fill-opacity: .5;
+		  stroke: #fff;
+		  stroke-width: .5px;
+		}
+
+		.legend circle {
+		  fill: none;
+		  stroke: #ccc;
+		}
+
+		.legend text {
+		  fill: #777;
+		  font: 10px sans-serif;
+		  text-anchor: middle;
+		}
+		</style>
 	</head>
 	<body onload="sizeChange()">
 
@@ -39,6 +59,10 @@
 						date period.
 					</p>
 					<p>
+						<div id="slider-container">
+							Select a year: <span id="slider-selection"></span>
+
+						</div>
 						<div id="map-container"></div>
 					</p>
 				</article>
@@ -79,6 +103,7 @@
 		<script src="assets/js/skel.min.js"></script>
 		<script src="assets/js/util.js"></script>
 		<!--[if lte IE 8]><script src="assets/js/ie/respond.min.js"></script><![endif]-->
+		<script src="assets/js/d3.slider.js"></script>
 		<script src="assets/js/main.js"></script>
 		<script src="assets/js/app_subscription_over_time.js"></script>
 	</body>

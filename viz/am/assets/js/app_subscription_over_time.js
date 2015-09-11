@@ -4,6 +4,9 @@ var projection = d3.geo.albersUsa().scale(1100);
 // define path generator
 var path = d3.geo.path().projection(projection);
 
+// define the scale for the size of the bubble
+var radius = d3.scale.sqrt().domain([0, 1e6]).range([0, 15]);
+
 // create SVG element
 var svg = d3.select("#map-container").append("svg")
     .attr("width", "100%")
@@ -18,40 +21,33 @@ var map = svg.append("g")
     .attr("id", "map")
     .attr("class", "map");
 
+var width = $("#map-container").width();
+var height = $("#map-container").height();
+
 function sizeChange() {
     // resize the map to fit within container
     d3.select(".map")
-        .attr("transform", "translate(0,60) scale(" + $("#map-container").width()/1000 + ")");
+        .attr("transform", "translate(0,60) scale(" + width/900 + ")");
 
     //$("svg").height($("#map-container").width()*0.618);
 }
 
-function circleSize(d){
-    return Math.sqrt( 0.0005 * Math.abs(d) );
-};
-
 function createLegend(){
     var legend = svg.append("g")
-        .attr("id","legend")
-        .attr("transform","translate(" + $("#map-container").width() * 0.55 + ",10)");
+        .attr("class", "legend")
+        .attr("transform", "translate(" + (width - 75) + "," + (height - 60) + ")")
+        .selectAll("g")
+        .data([1e6, 5e6, 1e7])
+        .enter().append("g");
 
-    legend.append("circle").attr("class","loss").attr("r",5).attr("cx",1).attr("cy",30)
-    legend.append("text").text("# of subscribers").attr("x",10).attr("y",33);
+    legend.append("circle")
+        .attr("cy", function(d) { return -radius(d); })
+        .attr("r", radius);
 
-    var sizes = [ 100000, 1000000, 10000000 ];
-    for ( var i in sizes ){
-        legend.append("circle")
-            .attr( "r", circleSize( sizes[i] ) )
-            .attr( "cx", 80 + circleSize( sizes[sizes.length-1] ) )
-            .attr( "cy", 2 * circleSize( sizes[sizes.length-1] ) - circleSize( sizes[i] ) )
-            .attr("vector-effect","non-scaling-stroke");
-        legend.append("text")
-            .text( (sizes[i] / 1000000) + "M" + (i == sizes.length-1 ? " members" : "") )
-            .attr( "text-anchor", "middle" )
-            .attr( "x", 80 + circleSize( sizes[sizes.length-1] ) )
-            .attr( "y", 2 * ( circleSize( sizes[sizes.length-1] ) - circleSize( sizes[i] ) ) + 5 )
-            .attr( "dy", 13)
-    }
+    legend.append("text")
+        .attr("y", function(d) { return -2 * radius(d); })
+        .attr("dy", "1.3em")
+        .text(d3.format(".1s"));
 }
 
 function setTooltipContent(d){
@@ -68,7 +64,7 @@ function drawCitiesInfo(data) {
         .enter().append("circle")
             .attr("cx", function(d){ return projection([d.lon, d.lat])[0]; })
             .attr("cy", function(d){ return projection([d.lon, d.lat])[1]; })
-            .attr("r", function(d){ return Math.sqrt(parseInt(d.population)*0.0005); })
+            .attr("r", function(d){ return radius(d.population); })
             .attr("vector-effect","non-scaling-stroke")
             .attr("class", "loss")
             .on("mousemove", function(d){
