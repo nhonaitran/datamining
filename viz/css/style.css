@@ -7,16 +7,15 @@ text {
   stroke: none;
 }
 
+#map-container {
+	/*border:1px solid #d0d0d0;
+	border-radius: 3px;*/
+}
 
 .land {
   fill: none;
   stroke: #ddd;
   stroke-width: 0.03em;
-}
-
-.state-boundary {
-  fill: none;
-  stroke: #bbb;
 }
 
 .map {
@@ -32,7 +31,7 @@ text {
   stroke-width: 0.03em;
 }
 
-#legend text{
+.legend text{
   font-size: 12px;
 }
 

@@ -3,35 +3,41 @@
     <script src="js/d3.v3.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/queue-async/1.0.7/queue.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
+    <script src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js'></script>
     <script src="js/colorbrewer.js"></script>
     <link rel="stylesheet" href="css/style.css"/>
   </head>
-  <body>
+  <body onload="sizeChange()">
     <div id="map-container"></div>
-
+    <script src="js/map.js"></script>
     <script>
-    // width and height of map
-    var width = 960, height = 660;
-
-    // define map projection
-    var projection = d3.geo.albersUsa()
-        .translate([width / 2, height / 2])
-        .scale(750);
-
-    // define path generator
-    var path = d3.geo.path()
-        .projection(projection);
-
-    // create SVG element
-    var svg = d3.select("#map-container").append("svg")
-        .attr("width", width)
-        .attr("height", height);
-
-    var g = svg.append("g")
-        .attr("id","map");
-
-    var map = g.append("g")
-        .attr("class", "map");
+    // // width and height of map
+    // var width = 960, height = 550;
+    //
+    // // define map projection
+    // var projection = d3.geo.albersUsa()
+    //     .translate([width / 2, height / 2])
+    //     .scale(750);
+    //
+    // // define path generator
+    // var path = d3.geo.path()
+    //     .projection(projection);
+    //
+    // // create SVG element
+    // var svg = d3.select("#map-container").append("svg")
+    //     .attr("width", width)
+    //     .attr("height", height);
+    //
+    // // create tooltip element to display detailed information about the state when mouse hovers a state
+    // var tooltip = d3.select("#map-container").append("div")
+    //     .attr("id", "tooltip")
+    //     .style("display","none");
+    //
+    // var g = svg.append("g")
+    //     .attr("id","map");
+    //
+    // var map = g.append("g")
+    //     .attr("class", "map");
 
     // define quantile scale to map data values into buckets of color
     var numColorClasses = 9,
@@ -40,17 +46,20 @@
 	var color = d3.scale.quantile()
         .range(colorScheme[numColorClasses]);
 
-    // create tooltip element to display detailed information about the state when mouse hovers a state
-    var tooltip = d3.select("#map-container").append("div")
-        .attr("id", "tooltip")
-        .style("display","none");
-
     var fields = [ "Code", "1990-advanced", "1990-bachelors", "1990-hs",
     "1990-not-hs", "2000-advanced", "2000-bachelors", "2000-hs",
     "2006-advanced", "2006-bachelors", "2006-hs", "2007-advanced",
     "2007-bachelors", "2007-hs", "2008-advanced", "2008-bachelors",
     "2008-hs", "2009-advanced", "2009-bachelors", "2009-hs"];
     var field = "1990-hs";
+
+    function sizeChange() {
+        // resize the map to fit within container
+        d3.select(".map")
+            .attr("transform", "translate(0,60) scale(" + $("#map-container").width()/1000 + ")");
+
+        //$("svg").height($("#map-container").width()*0.618);
+	}
 
     function drawChoropleth(us, features) {
         map.selectAll("path")
@@ -65,8 +74,8 @@
                     tooltip
                     .style( {
                         "display" : "block",
-                        "top" : (d3.event.pageY - 120) + "px",
-                        "left" : (d3.event.pageX + 10) + "px"
+                        "top" : (d3.event.pageY - 100) + "px",
+                        "left" : (d3.event.pageX - 50) + "px"
                     })
                 })
                 .on("mouseout", function(){
@@ -89,7 +98,9 @@
     }
 
     function createLegend(color) {
-        var legend_group = g.append("g").attr("id","legend").attr("transform","translate(750,270)");
+        var legend_group = svg.append("g")
+            .attr("id","legend")
+            .attr("transform", "translate(" + $("#map-container").width() * 0.87 + ",150)");
 
         var legend = legend_group.selectAll("g.legend")
             .data(color.range())
@@ -125,11 +136,6 @@
         tooltip.html( html );
     }
 
-    queue()
-        .defer(d3.json, "json/us.json")         //load GeoJSON us states map data
-        .defer(d3.csv, "data/education.csv")    //load education data
-        .await(render);
-
     function render(error, us, education) {
         if (error) throw error;
 
@@ -153,8 +159,13 @@
         drawChoropleth(us, features);   //bind data and create one path per GeoJSON feature
         colorStates(field, color);      //set scaled color based on education data
         createLegend(color);            //render visualization legend
-
     }
+
+    queue()
+        .defer(d3.json, "json/us.json")         //load GeoJSON us states map data
+        .defer(d3.csv, "data/education.csv")    //load education data
+        .await(render);
+
   </script>
   </body>
 </html>
