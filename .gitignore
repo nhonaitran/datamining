@@ -160,3 +160,5 @@ $RECYCLE.BIN/
 __pycache__/
 
 config.ini
+*.wpr
+*.wpu
