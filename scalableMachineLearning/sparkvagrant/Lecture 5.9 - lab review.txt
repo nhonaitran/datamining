@@ -1,0 +1,63 @@
+
+In this segment, I'm going to introduce
+the kinds of analyses you'll be performing in the lab.
+The data we'll be working with consists
+of a collection of measurements in the brain of a larval zebra
+fish.
+These measurements were made using a method called
+light sheet microscopy.
+As described in the earlier segment,
+the raw data are time varying images
+of calcium fluorescence, which is a signal that reflects
+the activity of neurons.
+The raw data looks something like this movie,
+though the version you'll be working with
+has been significantly down sampled
+for the purpose of the lab.
+We'll be asking questions like which brain areas are
+active at which times and which brain areas are
+activated by different directions
+of the visual stimulus.
+
+More specifically, we'll be given
+a collection of neural signals that
+vary over time derived from the movie like you just saw,
+and our goal will be to find representations
+of the data using dimensionality reduction that
+reveal how responses are organized across both space
+and time.
+
+Here we'll briefly walk through an example
+of how PCA can be used to answer these questions.
+This is very similar to the analysis you'll be doing.
+We start with neural signals measured over time.
+In this case, across multiple repetitions
+of the same stimulus.
+Those are the boxes shown in gray.
+An initial pre-processing step, which has already
+been performed for you, is to average the responses
+across the multiple repetitions.
+So we start with a collection of many neural signals,
+each containing the average response to the stimulus.
+We then perform PCA to reduce these high dimensional signals
+into a two dimensional space.
+What we now have for every neuron
+is a pair of numbers that describes
+the temporal properties of its response.
+To help visualize this two dimensional space,
+we map positions in two dimensions
+onto the color wheel, and this allows
+us to go back and color the brain based
+on this representation.
+Here's a picture just like the ones
+you'll generate in the lab.
+This image is a computational map
+the shows the spatial organization of neurons
+with different properties based on the PCA analysis I just
+described.
+For example, neurons can be in different regions,
+but have the same color, like the neurons in green.
+This means that despite being in different locations,
+they have very similar responses in terms
+of how the response varies over time, as identified
+through dimensionality reduction.

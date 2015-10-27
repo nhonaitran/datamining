@@ -1,0 +1,43 @@
+
+In this segment, we'll provide an overview
+of the click-through rate prediction pipeline
+that you'll be working on in this week's Spark coding lab.
+The goal of the lab is to implement a click-through rate
+prediction pipeline using various techniques that we've
+discussed in this week's lecture.
+The raw data consists of a subset of a data
+from a Kaggle competition sponsored by Criteo.
+This data includes 39 features describing users, ads,
+and publishers.
+Many of these features contain a large number of categories.
+Additionally, for privacy purposes
+the features have been anonymized.
+We'll be using a small fraction of the Kaggle data.
+And the Kaggle data itself is only a small fraction
+of Criteo's actual data.
+As on the previous lab, you'll split
+this data set into training, validation, and test data sets.
+You'll next need to extract features
+to feed into a supervised learning model.
+And feature extraction is the main focus of this lab.
+You'll create OHE features, as well as hashed features,
+and store these features using a sparse representation.
+You will also visualize feature frequency
+to get a better sense of the sparsity pattern of this data.
+Given a set of features, either OHE or hashed features,
+you will use MLlib to train logistic regression models.
+You will then perform Hyperparameter
+tuning to search for a good regularization parameter,
+evaluating the results via log loss,
+and visualizing the results of your grid search.
+You'll also look at a ROC plot to understand
+the trade-off between the false positive
+and the true positive rates.
+You will then evaluate the final model, again, using log loss
+and compare its accuracy to that of a simple baseline that
+always predicts the fraction of training points
+that correspond to click-through events.
+You will also compare the accuracy
+of models train using OHE features and hashed features.
+The final model you train could be
+used for feature click-through rate prediction.

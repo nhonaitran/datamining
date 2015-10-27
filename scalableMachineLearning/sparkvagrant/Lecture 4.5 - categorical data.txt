@@ -1,0 +1,152 @@
+
+In this segment, we'll talk about how
+we can deal with categorical data when training a model.
+In particular, we'll introduce one-hot encoding,
+which is a standard technique for converting
+categorical features into numerical ones.
+Recall the optimization problem we
+solved for logistic regression.
+And notice that the data points appear in the optimization
+in the form of dot products.
+And thus, when training a logistic regression model,
+we assume that the features are numerical.
+In fact, many learning models assume
+that all features used to represent an observation
+are numeric.
+In practice, our raw data is sometimes numeric.
+And examples include images being
+represented via pixels or user ratings represented
+as integer scores.
+But in many other cases, the raw data
+is not numeric, which can be problematic,
+given the assumptions of many learning methods.
+For instance, data is often represented via text,
+as is the case with web hypertext,
+emails, or genomic sequencing data.
+As another example, let's consider the problem
+of clickthrough rate prediction.
+As we've previously discussed, in this problem
+we work with features describing a user, an advertiser,
+and a publisher, and many relevant features
+will be non-numeric.
+So for instance, non-numeric features
+such as gender, nationality, and occupation
+could be relevant for a user.
+Descriptive non-numeric features for both advertisers
+and publishers include their industry and their location.
+And finally, we want to include features
+specific to the particular ad and publisher
+site under consideration, and the text and the language
+of the ad and the publisher site are both useful features,
+as is the target demographic for both the ad and the site.
+So what do we do when our data is non-numeric,
+as it so often is the case?
+The first option is to simply restrict ourselves
+to methods that natively support non-numeric features.
+And it is the case that some useful learning methods,
+in particular, decision trees and ensembles of trees,
+naturally support non-numeric features.
+However, this approach severely limits our options.
+A second approach is to convert non-numeric features
+to numeric ones, which allows us a wide range of learning
+methods to choose from.
+The question, of course, though, is how we can effectively
+perform this conversion.
+Before answering this question, let's
+talk about the two main types of non-numeric features
+that we encounter.
+First, we have categorical features.
+These are features that contain two or more categories,
+and these categories have no intrinsic ordering.
+So, for example, consider a country feature
+with three categories, Argentina, USA, and France.
+Although people may have a lot of national pride,
+there's no underlying ordering or ranking
+of these three categories.
+And hence, the country feature is an example
+of a categorical feature.
+Other examples of categorical features
+include gender, occupation, and language.
+The second common class of non-numeric features
+are ordinal features.
+Ordinal features, again, have two or more categories.
+But here, these categories do contain
+some ranking information but only
+relative ordering information.
+And these types of features often
+arise in survey questions.
+For instance, consider a survey question
+that asks someone to rate their health
+as poor, reasonable, good, or excellent.
+From this question, we could define a health feature
+with four categories.
+And these four categories can be ranked,
+with excellent being the best and poor being the worst.
+However, there's not necessarily a consistent spacing
+between these categories.
+Thus the help feature is an example of an ordinal feature.
+Now that we have a basic understanding
+of the main types of non-numeric features,
+let's consider one seemingly reasonable strategy
+for converting non-numeric features to numeric ones.
+Specifically, we could represent a non-numeric feature
+with a single numeric feature by representing each category
+with a distinct number.
+So let's look at an example of how the strategy might work.
+And to do that, we'll go back to our health feature, where
+we have four health categories ranging from poor to excellent.
+According to this strategy, we would
+assign each of the four categories
+to integer values ranging from 1 to 4.
+At first glance, this seems like a reasonable strategy,
+and, in fact, using a single numerical feature
+does preserve the ordering for ordinal features.
+However, doing this introduces a notion
+of closeness between the ordinal categories that
+didn't previously exist.
+So, for instance, since the "good" category is represented
+by 3, and the "poor" category is represented by 1,
+this numerical representation implies
+that the distance between good and poor equals 2, 3 minus 1.
+Similarly, the distance between excellent and poor
+is 3, or 4 minus 1.
+This type of distance information
+didn't exist in our initial representation
+of health categories.
+This becomes an even bigger issue
+when applying this strategy on categorical features.
+So let's go back to our country feature example,
+where our three categories are Argentina, France, and USA.
+According to the proposed strategy,
+we would assign integer values to each category,
+for instance, defining Argentina as 1, France as 2,
+and USA as 3.
+But this mapping introduces relationships
+between these categories that don't otherwise exist.
+Our particular choice implies that France
+is in between the other two countries,
+even though the original categories have
+no intrinsic ordering.
+So as we've seen, using a single numeric feature
+is not such a good idea, as it introduces
+spurious relationships between the categories.
+To get around this issue, we can use a different strategy
+called one-hot encoding.
+In this strategy, we create a separate dummy variable
+for each category.
+Going back to the country feature example,
+since we have three categories, the one-hot encoding strategy
+would create three new binary dummy features.
+For instance, the first feature could correspond to Argentina,
+the second feature could correspond to France,
+and the third one to USA.
+If the original categorical feature is Argentina,
+we'd set the first binary feature to 1 and the other two
+binary features to 0.
+And more generally, we set exactly one of these binary
+features equal to 1, depending on the value of the underlying
+categorical feature.
+By creating separate features for each category,
+we don't introduce any spurious relationships,
+and this strategy works well both for categorical and
+ordinal features.

@@ -1,0 +1,52 @@
+
+In this segment, we'll provide a high-level overview
+of the communication hierarchy for the various components
+in the distributed computing network.
+We'll start with the internals for a single node
+and conclude with the network connecting various nodes.
+Let's start with a single node central processing
+unit, or CPU.
+A single core of a CPU can perform roughly two billion
+cycles per second.
+The processing speed, or clock speed, for a single core
+is not changing.
+But multi-core CPUs have emerged and improved
+the overall performance of CPUs.
+And the number of cores per CPU is growing rapidly.
+Next, let's talk about a node's RAM, or main memory.
+Main memory has storage capacity of 10 to 100 gigabytes.
+And this capacity is growing quickly.
+Additionally, communication between RAM and the CPU
+is fast, at roughly 50 gigabytes per second.
+Next, we have disk storage, or hard drive storage.
+Disk storage capacity is growing exponentially,
+but communication speed is not.
+And communication between the hard drive and the CPU
+is roughly 500 times slower than between main memory
+and the CPU.
+This communication issue to some extent is mitigated by the fact
+that a node usually has multiple disks.
+And each disk can communicate in parallel with the CPU.
+However, if we consider a node with 10 disks communicating
+in parallel with the CPU, then reading from disk
+is still 50 times slower than reading from RAM.
+We've now discussed the main components of a single node.
+So let's see what happens when we connect them together
+in a distributed network.
+Typical network speed is 10 gigabits
+per second, which is on the order of one
+gigabyte per second.
+We'll consider a top-of-rack architecture,
+which is the most common setup for commodity clusters.
+
+Nodes are physically stored in racks.
+And nodes on the same rack can directly
+communicate with each other at a rate of 10 gigabits per second.
+However, nodes on different racks
+can't communicate directly with each other,
+and thus communicate at a slower rate.
+In summary, access rates fall sharply with distance.
+And there is a roughly 50 x gap between reading from memory
+and reading from either disk or the network.
+We must take this communication hierarchy into consideration
+when developing parallel and distributed algorithms.

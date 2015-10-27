@@ -1,0 +1,211 @@
+
+Welcome to the segment of the course on neuroscience.
+My name is Jeremy Freeman, and I'm
+a group leader at HHMI's Janelia Research Campus, where
+I study the function of the brain
+and develop computational methods for analyzing
+and understanding neuroscience data.
+Before describing to you the kinds of analyses
+we'll be doing, I want to give a very brief introduction
+to neuroscience itself.
+I can't possibly cover the entire field of neuroscience
+in only 10 minutes.
+But I hope to give you an overview
+of the kinds of questions we're asking and the kinds of data
+that we're collecting and analyzing.
+We're going to be talking about the brain.
+This is a human brain showing both the cerebral cortex
+and subcortical structures, like the cerebellum.
+We'll also be talking about animal brains.
+There are important differences between the brains of humans
+and animals, but we also believe there
+to be principles of neural function
+that span multiple species.
+The brain is just about three pounds of biological matter,
+but it's responsible for nearly everything that
+makes us us-- what we perceive, how we act, how we think.
+And we barely understand how it works.
+
+President Obama put it best when describing a new initiative
+for neuroscience research in the US,
+called the Brain Initiative.
+He said, "As humans, we can identify galaxies light years
+away.
+We can study particles smaller than an atom.
+But we still haven't unlocked the mystery
+of the three pounds of matter that sits between our ears."
+It's really remarkable how little
+we understand about the brain, but it also
+makes it an incredibly exciting field.
+
+One way to think about a lot of brain function
+is to think of the brain as everything that
+happens in between stimulati-- which
+is stuff in the outside world-- and behavior-- which
+is the stuff that we do.
+The brain consists of special cells called neurons,
+indicated here as circles.
+There are many types.
+They're connected to each other in complex ways
+and send signals to one another through electrical impulses
+called action potentials, or spikes.
+The activity of neuronal networks
+is responsible for the brain's ability
+to process and represent information and guide behavior.
+
+One of the many challenges of neuroscience
+is that there are so many neurons.
+Here's a figure showing the number
+of neurons in different animal species
+on a logarithmic scale, all the way
+from the several neurons in the snail
+to the 100 billion neurons in the human.
+Even seemingly simple animals, like the ant,
+have hundreds of thousands of neurons.
+These large numbers pose a daunting challenge,
+both to measuring the activity of all of these neurons
+and to understanding their function.
+
+Ideally, we'd study the brain in humans.
+There are technologies like functional magnetic resonance
+imaging, or FMRI, that make it possible
+to non-invasively measure correlates
+of neural activity in humans.
+FMRI specifically measures changes
+in blood oxygenation, which is related to,
+but not the same as, neural activity.
+
+We can use FMRI to measure responses in the brain
+to different kinds of stimuli.
+For example, here we're looking at differential FMRI related
+either to the flickering of a pattern-- on the right--
+or to the motion of dots-- on the left.
+In the bottom, the changes in red
+indicate regions of a human brain
+that respond to these stimuli.
+You can see that the activated regions are all
+in a area of the back of the brain,
+called the occipital lobe, which is
+the part of your brain responsible
+for visual processing.
+And there are different regions responsible for encoding
+motion, on the left, versus encoding the simple flickering
+of light, as on the right.
+
+But FMRI is not enough.
+First, it's measuring blood oxygenation,
+which is only indirectly related to neural activity.
+Second, it's incredibly low resolution.
+In the human, a single pixel in the images that we were just
+looking at corresponds to a region containing about 50,000
+neurons.
+To understand the detailed structure and function
+of the brain, we need to record activity
+at the resolution of individual neurons and for many neurons
+simultaneously.
+
+An exciting set of new technologies
+is making this possible, many developed just
+within the last decade.
+One approach is to use what's called
+a multielectrode recording device.
+These are special collections of electrodes
+that measure the electrical signaling of many neurons
+at high temporal resolution, and thus far have
+been used to measure hundreds of neurons simultaneously.
+Much larger populations can be recorded
+at slightly lower temporal resolutions
+by using optical methods.
+For these techniques, animals are genetically engineered
+so that their neurons light up or fluoresce when active.
+And those changes in fluorescence
+can be measured by special forms of laser microscopy, generating
+time varying images of neural activity.
+Two-photon imaging-- which is the most common method used
+in mice-- enables the recording of hundreds or thousands
+of neurons.
+And light-sheet imaging-- which can only
+be used in transparent animals, like the larval zebrafish--
+enables the recording of up to 100,000 neurons simultaneously.
+Here's an example of light-sheet imaging in zebrafish.
+The color shows the change in fluorescence, which indicates
+the activity of neurons.
+The pattern in the upper left that's moving
+is the visual stimulus that was presented to the fish.
+And the size of the circle underneath that pattern
+indicates how strongly the fish swam in response
+to the stimulus.
+You can see that every time the pattern moves,
+the fish swims, the dot gets larger.
+And there's a complex dynamic pattern
+of activity across its brain.
+
+Here's an example of two-photon imaging in mice.
+The animal here is running on a ball
+in a tactile virtual reality environment.
+And the image on the left shows the activity
+of individual neurons turning on and off
+in an area called the somatosensory cortex.
+
+I want to briefly highlight just a couple key discoveries that
+have been made by recording the activity of neurons.
+One incredible example is the discovery
+of place cells, which won Edward and May-Britt Moser and John
+O'Keefe the Nobel Prize just last year.
+In these figures, the black paths
+show the trajectory of a mouse running
+through a square environment.
+The activity of neurons in a special region
+called the hippocampus were recorded
+using the electrical recording methods I described before.
+For two different neurons, we're showing a red dot every time
+that neuron fired a response, or action potential.
+The neuron on the left responds every time
+the animal is at one location in the square.
+This is called a place cell.
+The neuron on the right is even cooler.
+It responds every time the animal
+is at one of several locations.
+And those locations tile the environment, forming a grid.
+This is called a grid cell.
+Together, we think that these neurons
+underlie the animal's ability to navigate their environment.
+But exactly how these cells form and function
+still remains a mystery.
+
+Another classic example is orientation tuning.
+Turns out that individual neurons
+in the visual part of the brain respond to visual patterns
+at different orientations.
+For example, a neuron might respond the most
+to a bar that's vertical, or diagonal, or horizontal.
+David Hubel and Torsten Wiesel won a Nobel Prize
+for discovering this in the 1950s and '60s.
+More recently, people have used the imaging methods
+that I described earlier to reveal
+the fine-scale organization of these responses.
+In this map-- which represents a very, very small fraction
+of the mouse brain-- we see how individual neurons
+are tuned to different orientations of a bar,
+as indicated by their color.
+This is a now classic example of how networks of neurons
+can detect features of their environment.
+And this idea of neurons as feature detectors
+is one of the key inspirations behind modern deep learning
+approaches to pattern recognition.
+
+New technologies for recording brain activity
+are incredibly exciting, but they also
+pose data analysis challenges.
+A short recording of neural activity
+in a small region of the mouse brain
+can generate 100 gigabytes of raw data.
+A recording of neural activity across the brain of the Larval
+zebrafish can generate a terabyte.
+And although we're still very far from being
+able to measure the activity of the entire mouse brain,
+if we could, it would generate hundreds of terabytes or more
+in a single experiment.
+For this reason, neuroscience needs large scale machine
+learning pipelines for processing and analyzing data
+at scale.

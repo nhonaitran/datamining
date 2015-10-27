@@ -1,0 +1,239 @@
+
+In this segment, we'll present the PCA optimization problem
+and describe its solution.
+We'll also discuss some helpful tips
+when using PCA in practice.
+Let's start by discussing the formulation.
+The goal of PCA is to find a lower dimensional
+representation of our d dimensional original data.
+We represent this data in an n by d matrix,
+which we call X. Note that each row of this matrix
+corresponds to an observation.
+Specifically, we aim to find a k dimensional representation
+for each of our n data points, where k is much smaller than d.
+The matrix Z stores the k dimensional representations
+of our data points.
+We impose a specific structure on Z,
+namely that it is the product of X and some other matrix,
+P. P has k columns, and these columns
+are called the principal components of the data.
+By defining Z equals XP, we are assuming
+that Z is a linear combination of the original data,
+and this linearity assumption simplifies our problem.
+PCA is an optimization problem in that
+we are searching over all d by k matrices
+to find the appropriate choice for P. We impose
+specific variance and covariance constraints on P related
+to the variance of our original data.
+We'll describe in detail these constraints
+in subsequent slides.
+But first, let's remind ourselves
+of the definitions of variance and covariance,
+and let's recall that X is the matrix storing
+our initial observations.
+We can then define X superscript i as the ith observation
+and, X i j is the jth feature of the ith observation.
+Further, we can take the average or mean
+of the jth feature over all n observations,
+and we can represent this mean as mu sub j.
+With this notation in place, we can now
+define the sample variance of the first feature.
+The variance captures the variation of a feature
+relative to the feature mean, and equals
+the sum of the squared difference
+between each sample and the mean,
+divided by the number of samples.
+Throughout this lecture, we'll often
+assume that our features have mean 0
+in order to simplify notation.
+This is a reasonable assumption to make,
+since it's straightforward to convert
+a given data set into one with zero mean features.
+So assuming that we have zero mean features, the expression
+for variance simplifies, as we can drop the mu one term,
+since, by assumption, it equals zero.
+Next, let's define the covariance.
+The covariance is a straightforward generalization
+of the variance, and quantifies the relationship
+between two features.
+Assuming, again, that we have n samples with two zero
+mean features, we can compute the sample covariance
+of these two features by computing
+the product of the two feature values for each data point,
+taking the sum of these products,
+and finally dividing by n, the number of samples that we have.
+The covariance is symmetric in that sigma 1 2
+equals sigma 2 1.
+Additionally, a large positive covariance
+indicates that the two features are highly correlated,
+while a large negative covariance indicates
+that the two features are highly anticorrelated.
+And a covariance of zero means that the two features
+are uncorrelated.
+Additionally, if the covariance between the two features
+equals each of their squared variances,
+then the two features are the same,
+at least on the given sample.
+Next, we can divide the sample covariance matrix,
+which captures covariance information when
+we have many features.
+The covariance matrix is d by d matrix
+where each entry stores pairwise covariance information
+about the d features.
+In particular, the diagonal entries of this matrix
+equal the sample variances of the features,
+and the ijth entries equal the sample covariance
+between the ith and jth features.
+Since covariances are symmetric, as we discussed
+in the previous slide, the covariance matrix
+itself is symmetric.
+Assuming that we have zero mean features,
+the covariance matrix can be expressed in a simple form
+as 1 over n times x transpose x, where squared
+x is our n by d data matrix.
+To see how this matrix multiplication corresponds
+to sample variances and covariances,
+let's walk through a simple example.
+Imagine we have a data set with n
+equals 3 samples and d equals 2 features, both of which
+have 0 mean.
+In this case, the sample variance of the first feature
+involves the sum of three terms corresponding
+to the square of the first feature for each of the sample
+points.
+But this sum exactly corresponds to the top left entry
+of the matrix multiplication result
+on the bottom of the slide.
+Similarly, the sample covariance involves a sum
+of three terms corresponding to the product of the first two
+features for each sample point.
+And again, this sum is exactly the top right entry
+of the matrix multiplication on the bottom of the slide.
+
+Looking at the full result of the matrix multiplication,
+we see that the bottom left entry equals the top right
+entry, which shows that the matrix is symmetric,
+and the bottom right entry is related to the variance
+of the second feature.
+In particular, dividing this matrix by n,
+or the number of sample points, results
+in the covariance matrix, as we previously discussed.
+
+Now that we've reviewed the definition of variance
+and have introduced the covariance matrix,
+we can revisit the details of the PCA formulation.
+In particular, we can address the question
+of what sorts of variance and covariance constraints
+we should make in out reduced representation.
+
+In PCA, we require two very natural constraints.
+First, in our reduced representation,
+we want to avoid redundancy, and to address this,
+PCA requires that the features in our reduced dimensions
+have no correlation.
+We can equivalently describe this
+as saying that in the new representation,
+the covariance between features equals 0, or, in other words,
+that the off diagonal entries of the covariance matrix C sub z
+are all equal to zero.
+Second, PCA requires that the features in the reduced
+dimension maximize variance, which
+means that the features are ordered by their variance.
+In other words, the variance of the first feature
+in the reduced dimension is the largest,
+followed by the variance in the second feature, and so on.
+Hence, the top left entry of the covariance matrix Cz
+is the largest diagonal entry, while the bottom right entry
+is the smallest diagonal entry.
+
+Given these constraints, it turns out
+that the PCA solution can be derived from the sample
+covariance matrix of X. In particular,
+the k principal components that define p equal the top k
+eigenvectors of CX.
+Some of you might not know about eigenvectors
+or eigendecompositions, and that's OK.
+Eigendecomposition is a fundamental concept
+in linear algebra, and though a detailed overview
+of this material is beyond the scope of this course,
+we will briefly introduce the terminology and key ideas
+necessary in the context of PCA.
+Specifically, all covariance matrices
+have an eigendecomposition, which
+means they can be written as the product of three matrices,
+namely U, lambda, and U transpose.
+For a d by d covariance matrix, there
+are d eigenvectors, each of which
+is a d dimensional vector.
+These vectors are stored by a matrix, U,
+with each column of U being an eigenvector.
+Eigenvectors have corresponding eigenvalues,
+which are real numbers, and the eigenvectors
+are sorted by their eigenvalues.
+Additionally, the matrix lambda is a diagonal matrix,
+with its diagonal entries being the sorted eigenvalues
+of the covariance matrix.
+In the context of PCA, the d eigenvectors
+of the covariance matrix are the d orthonormal directions
+of maximal variance in the data.
+Note that orthonormal vectors are simply
+perpendicular vectors with Euclidean norm equal to one.
+Additionally, the eigenvalue associated with an eigenvector
+equals the variance of the data in the direction
+of this eigenvector.
+Hence, the first or top eigenvector
+is the direction of max variance.
+Again, if you're not familiar with the details
+about eigendecomposition, that's OK.
+For the purpose of this course, the definitions
+ascribed in this slide will suffice.
+Additionally, in this week's lab, we'll be implementing PCA,
+and we will use the eigh function
+from numpy.linalg to compute an eigendecomposition.
+
+Finally, we'll discuss a few useful tips
+when using PCA in practice.
+The first involves how to choose k, or the dimension
+of the new representation.
+Oftentimes, we use PCA to visualize our data sets,
+and in such applications, we typically
+choose k to equal 2 or 3 for plotting purposes.
+In other cases, we're most interested in finding
+a succinct representation that captures most
+of the variance in our data.
+And in this case, we can use the fact
+that eigenvalues correspond to variances
+in the directions of their associated eigenvectors.
+Additionally, we can use the fact
+that eigenvalues are represented in sorted order.
+In particular, given the eigenvalues
+of a sample covariance matrix, we
+can easily compute the fraction of retained variance
+for any given k by computing the some of the top k eigenvalues
+and dividing the sum by the sum of all of the eigenvalues.
+In practice, people often choose a value of k such
+that some desired fraction of variance is retained.
+Additionally, since PCA is far and away the most commonly used
+method for dimensionality reduction,
+it's important to note some of its limitations
+and assumptions.
+First, PCA makes linearity assumptions,
+and also assumes that the principal components
+are orthogonal.
+These assumptions are not always appropriate,
+and various extensions of PCA have
+been proposed with different underlying assumptions.
+Second, throughout this segment, we've
+assumed that our data is centered, or, in other words,
+that our features have zero mean, as this
+simplifies our notation.
+It's important to note that raw data is usually not centered,
+and that in practice, we must take
+into account the means of our features when performing PCA.
+And finally, since PCA chooses directions of max variance,
+it depends on the relative scale of each feature.
+If our raw data contains some features
+with much larger magnitudes, these features
+will typically exert a greater influence on the PCA solution.
+And in practice, people often rescale their data
+before performing PCA.

@@ -1,0 +1,181 @@
+
+In this segment, we'll review the steps required
+to compute the PCA solution.
+We'll then talk about how to perform these steps
+in large-scale settings.
+As we've discussed, the goal of PCA
+is to find a lower dimensional representation
+of our original data where we have
+n, d dimensional observations.
+And in this segment, we'll assume that our raw data is not
+centered.
+And so the first step in PCA involves centering our data.
+Or in other words, computing the mean of each feature
+and subtracting these feature means from each original data
+point.
+We'll assume that our centered data is stored in an n
+by d matrix which we'll call x.
+Once we've centered our data, we next
+need to compute the sample covariance
+matrix, or the scatter matrix.
+Note that the scatter matrix is simply the sample covariance
+matrix without dividing by n.
+PCA returns the same solution in either case,
+as discussed in the previous segment.
+And we'll work with the scatter matrix in this segment
+to simplify our notation.
+As we previously discussed, the principal components
+of our data equal the eigenvectors of the sample
+covariance matrix.
+The eigenvectors of a scatter matrix
+equal those of the sample covariance matrix.
+So in the third step, we compute these eigenvectors
+by performing an eigendecomposition.
+
+Finally, in order to obtain our k dimensional representation,
+we need to multiply our original data by the top k eigenvectors
+to compute the PCA scores.
+
+Now let's talk about how we perform these steps
+when working with large amounts of data.
+In particular, we'll consider two settings.
+In the first setting, the big n and small d setting,
+we assume that quadratic local storage,
+cubic local computation, and O of dk communication
+are all feasible.
+These are similar assumptions we make
+when performing closed-form linear regression at scale.
+And in fact, we'll see that we can
+use similar concepts to compute the PCA
+solution in this setting.
+In our second large-scale setting,
+we assume that both n and d are large.
+And therefore, we can only afford storage, computation,
+and communication that are linear in both n and d.
+We can take an iterative approach
+to compute the PCA solution in this setting,
+and there are parallels here with our previous discussion
+of linear regression in the big n and big d setting, where
+we also use an iterative approach,
+and in particular, gradient descent.
+That said, the algorithm for PCA in this setting
+is different from gradient descent.
+In this segment, we'll discuss the details of the big n
+and small d setting.
+First, since n is large, we store it
+in a data parallel fashion, which requires
+O of nd distributed storage.
+And throughout this segment, we'll
+use our familiar toy example with six data points and three
+worker machines to illustrate the various steps
+of our computation.
+Next, we must center our data.
+And to do this, we must compute the mean of each feature.
+There are d features, and thus d feature means.
+And we define the vector m to be the d dimensional vector whose
+i-th component is the mean of the i-th feature.
+We can compute the mean vector via a simple
+reduce operation whereby we sum all of the data points
+together.
+After we have performed this sum,
+we can compute the mean vector, m,
+by simply dividing by the number of data points, n.
+After computing m on the driver, we
+must send it back to the workers so that each data
+point can be centered.
+Together, the reduce operation to compute m
+and the subsequent communication are inexpensive,
+as they are linear in d in terms of local storage, computation,
+and communication.
+Once each worker has access to m,
+we can then perform a map operation
+to create the centered data points, which
+simply involves subtracting m from each original data point.
+This requires O of a local computation at each worker.
+Now that we've computed our center data,
+we next need to compute the scatter matrix.
+As in the case of closed-form linear regression,
+we can efficiently perform this computation in a distributed
+fashion by using outer products.
+Let's look back at our example from the earlier lecture
+to see how we can use outer products to multiply
+two matrices.
+First consider the first column of the left input matrix
+and the first row of the right input matrix.
+We can compute their outer product
+with the result being the 2x2 matrix
+on the bottom of the slide.
+Next, we can consider the second column of the left input matrix
+and the second row of the right input matrix,
+and again compute their outer product,
+resulting in another 2x2 matrix.
+We can repeat this a third time to generate
+a third outer product.
+The sum of these outer products provides
+us with our desired result. And more generally,
+we can compute a matrix multiplication
+by taking a sum of outer products of corresponding rows
+and columns of the input matrices.
+
+We can use this interpretation of matrix multiplication
+to our benefit when computing a scatter matrix.
+We'll represent x visually by its rows or data points,
+and then we can express this matrix multiplication
+as a sum of outer products where each outer product involves
+only a single row of x, or a single data point.
+Also recall that, in the previous step,
+we computed our center data and we stored it
+in a data parallel fashion.
+So with this context, we can now compute the scatter matrix
+as a simple MapReduce operation.
+In the map step, we take each point
+and compute its outer product with itself.
+Each outer product takes O of d squared time,
+and we have to compute n of these outer products.
+This is a computational bottleneck
+in our PCA computation, but it's distributed
+across multiple workers.
+In terms of storage, we need to store the outer products
+computed on each machine.
+However, although we need to compute several outer product
+per machine, we can keep a running sum
+of these outer products so the local storage on each machine
+is simply O of d squared.
+In the reduce step, we simply sum over
+all of these outer products.
+This requires quadratic storage and computation
+in d, both of which are feasible since we're
+assuming that d is small.
+
+Once we've computed the scatter matrix,
+we need to perform its eigendecomposition.
+In our exercises, we'll do this by using
+the linear algebra package enum pi, which
+itself leverages a highly-optimized low-level
+linear algebra library.
+Since we want to compute a k dimensional representation
+for our data, we're interested in the top k
+principal components of our data, which we know
+are the top k eigenvectors of a scatter matrix.
+We represent these principal components by the d by k matrix
+P. As a result of eigendecomposition,
+we have access to the top k eigenvectors on the driver.
+But now we need to communicate them to the workers
+so that they can compute these k dimensional representations
+for the data points.
+This requires O of dk communication,
+which is the communication bottleneck in this algorithm.
+Additionally, the eigendecomposition
+generally requires cubic time and quadratic space.
+But if we only want the top k eigenvalues and eigenvectors,
+we can reduce this time complexity to O of d squared k.
+Finally, now that each worker has the principal component
+stored locally, we can compute the k dimensional
+representation for each point via a simple matrix vector
+multiply.
+This process requires O of dk local computation,
+and can be performed via a simple map operation.
+And in this week's lab, you'll go
+through each of these steps in more detail
+in order to implement PCA from scratch
+in the big n, small d setting.

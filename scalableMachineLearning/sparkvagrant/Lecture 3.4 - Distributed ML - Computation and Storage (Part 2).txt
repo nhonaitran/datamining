@@ -1,0 +1,83 @@
+
+In this segment, we'll continue our discussion
+of distributed machine learning principles related
+to computation and storage.
+We'll focus on the problem when D, the number of features,
+grows large.
+In the previous segment, we discussed the big N small D
+setting.
+In this setting, we can naturally
+use a distributed computing environment
+to solve for the linear regression closed
+form solution.
+To do this, we store our data across multiple machines
+and we compute X transpose X as a sum of outer products.
+This strategy can be written as a simple MapReduce
+operation, expressed very concisely in Spark.
+Now, let's consider what happens when D grows large.
+As before, storing X and computing X transpose X
+are bottlenecks.
+However, storing and operating on X transpose X
+is now also a bottleneck.
+And we can no longer use our previous strategy.
+So let's see what goes wrong.
+Here's what our strategy looks like in the small D
+setting with data stored across workers,
+outer products computed in the map step,
+and sum of these outer products performed in the reduced step.
+However, we can no longer perform D cubed operations
+locally or store D squared floats locally
+in our new setting.
+This issue leads to a more general rule of thumb,
+which is that when N and D are large,
+we need the computation and storage complexity to be
+at most linear in N and D.
+So how do we devise methods that are linear in space and time
+complexity?
+One idea is to exploit sparsity.
+Sparse data is quite prevalent in practice.
+Some data is inherently sparse, such as rating information
+and collaborative filtering problems or social networking
+or other grafted.
+Additionally, we often generate sparse features
+during a process of feature extraction,
+such as when we represent text documents
+via a bag-of-words features or when
+we convert categorical features into numerical representations.
+Accounting for sparsity can lead to orders
+of magnitudes of savings in terms
+of storage and computation.
+A second idea is to make a late and sparsity assumption,
+whereby we make the assumption that our high dimensional data
+can in fact be represented in a more succinct fashion,
+either exactly or approximately.
+For example, we can make a low rank modeling assumption
+where we might assume that our data matrix can in fact be
+represented by the product of two skinny matrices, where
+the skinny dimension R is much smaller than either N or D.
+Exploiting this assumption can also
+yield significant computational and storage gigs.
+A third option is to use different algorithms.
+For instance, instead of learning a linear regression
+model via the closed form solution,
+we could alternatively use gradient descent.
+Gradient descent is an iterative algorithm
+that requires layer computation and storage at each iteration
+thus making it attractive in the big N and big D setting.
+So let's see how gradient descent stacks up
+with a closed form solution in our toy example on a cluster
+with three machines.
+As before, we can store the data across the worker machines.
+Now in the map step, we require O of ND computation,
+and this computation is distributed across workers.
+And we also require O of D storage locally.
+In the reduced step, we require O of D local computation
+as well as O of D local storage.
+Moreover, unlike the closed form case,
+we need to repeat this process several times
+since gradient descent is an iterative algorithm.
+At this point, I haven't really told you
+how these question marks work.
+And in the next segment, we'll talk
+about what actually is going on with gradient
+decent [INAUDIBLE].

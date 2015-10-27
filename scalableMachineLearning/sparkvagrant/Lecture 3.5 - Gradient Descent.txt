@@ -1,0 +1,252 @@
+
+In this segment, we'll present the gradient descent algorithm
+and discuss how it can be used to solve the linear regression
+optimization problem.
+Recall that in linear regression,
+we aim to find a model or parameter vector
+w that minimizes the squared loss over the training points.
+Although a closed form solution exists
+to solve this optimization problem, in some cases,
+specifically when d, or the number of features, is large,
+it can be preferable computationally
+to solve this optimization problem iteratively.
+Gradient descent is one such iterative method
+for solving this optimization problem.
+Consider the objective function for linear regression
+when we have a single feature and assume no offset.
+This function, f of w, is a function
+of a single variable, w.
+Imagine that f of w is bowl-shaped,
+as shown in the figure on the slide,
+and achieves its minimum value at some w star.
+Then at a high level, the idea of gradient descent
+is to pick some initial starting point
+and to repeatedly go downhill until eventually reaching,
+or nearly reaching, w star.
+So let's see what this means in more detail.
+Given a bowl-shaped function f w,
+we first pick a random starting point,
+which we call w null or w0.
+Once we're at this point, we next
+need to pick a direction of descent.
+Since we're optimizing a function of a single variable,
+this direction can either be left or right.
+And in our particular example, we want to move left.
+Once we've picked the direction, we next
+need to decide how far to move in this direction.
+And the amount we move in our selected direction
+is called the step size.
+After selecting the step size, we perform an update.
+And we move to a new point, w1, which,
+if everything is going as planned, is closer to w star.
+As we see in this example, we're not yet done, though.
+And so we need to repeat this process over again.
+So now we start at w1 and choose a descent direction.
+And again we decide to move left.
+Once we've determined that we want to move left,
+we next need to determine our step size.
+After we've done this, we're once again
+able to update again and move to a new point, w2.
+We perform these steps repeatedly
+until some stopping criterion is satisfied.
+The stopping criterion is usually satisfied
+once the updates become sufficiently small,
+as defined by some tolerant type of parameter,
+or after some predetermined maximum number of iterations
+have been performed.
+
+So far that we've assumed that we're
+optimizing over a function that is nicely bowl-shaped.
+But what happens if we have a function that
+isn't so nicely behaved?
+For instance, consider the function
+on the right of the slide, which is a non-convex function.
+Non-convex functions can have multiple local minima.
+And in this particular example, the red point, w prime,
+and the blue point, w star, are both local minima.
+We want to find w star, as it's the global minimum
+of the function.
+And if we're lucky with our starting point,
+we may indeed end up at w star.
+But if we're not so lucky, we could end up
+at some other local minimum.
+In contrast, the figure on the left
+shows an example of a convex function
+which looks bowl-shaped.
+These functions have a nice property that any local minimum
+is a global minimum, and thus they
+have more favorable convergence properties.
+Thankfully for us, least squares regression, ridge regression,
+and logistic regression, which we'll
+be looking at later in this course,
+all involve minimizing convex functions.
+Next, let's discuss how we go about choosing a descent
+direction.
+In our simple 1D setting, we can only move in two directions,
+either left or right.
+So imagine that we pick a starting point that
+is to the right of w star.
+Visually, it is clear that we want to move to the left.
+And in this scenario, we further observe
+that the slope of the tangent line at w0 is positive.
+In contrast, imagine that our starting point
+is to the left of w star.
+In this case, it's now visually clear
+that we want to move to the right.
+And again, we can look at the slope of the tangent line
+at w0.
+And in this case, we can see that this slope is negative.
+Finally, imagine that we're actually already at w0.
+Here the slope of the tangent line equals 0, and in this case
+we don't want to move anywhere.
+So in summary, this example shows us
+that the negative slope is the direction of descent.
+And with this insight in mind, we
+have the following update rule in one dimension.
+We set a new point, w i plus 1, equal to wi,
+which is the current point, minus some constant value
+alpha times the derivative evaluated at the current point.
+The minus sign, along with the derivative,
+move us in the direction of the negative slope.
+The constant value alpha i is the step size,
+which is a user-specified hyperparameter.
+
+In the general setting where we have d features instead of 1,
+we can now move in any direction in Rd
+and thus have many more choices when
+choosing our descent direction.
+However, a natural choice is to move in the direction opposite
+of the gradient, which is a d-dimensional vector that
+is a generalization of a derivative for functions
+of two or more dimensions.
+Using the negative gradient as our descent direction,
+we obtain an update rule that looks
+very similar to the rule we derived in one dimension.
+
+Mathematical details of gradients
+are beyond the scope of this class.
+But to provide some intuition, let's
+look at a few examples in two dimensions.
+In these examples, function values
+are in black and white, with darker colors representing
+higher function values.
+The arrows are the gradient directions.
+And note that the arrows point towards the largest
+values or the darkest points.
+Hence, if we are interested in minimizing a function,
+we want to move in the direction opposite of the gradient.
+Now let's use what we've learned so far
+to compute the gradient descent update rule for least
+squares regression.
+We'll focus on the one-dimensional setting,
+and our goal is to minimize the function f of w.
+Based on what we've seen so far, computing the gradient descent
+update rule simply involves two steps.
+First, we need to compute the derivative
+of the function, or the gradient if the function is
+multidimensional.
+And second, we need to choose a step size.
+So we'll start by first computing the derivative.
+And to do this, we'll note that f of w is a summation.
+So we can compute the derivative by taking
+the derivative of each of the summands
+separately and summing the results.
+Moreover, we can take the derivative of each summand
+using the chain rule.
+Once we've done this, we get a scalar update rule
+as described in the slides.
+Note that when we write down this update rule,
+we've omitted the factor of 2 that we
+computed in the derivative.
+We do so for notational convenience.
+And this is a reasonable thing to do because we can simply
+scale the step size, alpha i, by a factor of 2
+and achieve the same update rule.
+The vector update rule looks very similar,
+though here we are updating d parameters instead of just one.
+As a result, w i plus 1, wi, and xi
+are all in bold to signify that they're vectors,
+and we see a dot product instead of a simple product.
+
+As we noted in the last slide, the two steps
+to compute an update are first to compute a derivative
+or gradient, and second to choose the step size.
+We just talked about this first step,
+so now let's discuss how to choose an appropriate step
+size.
+If we pick too small of a step size,
+we will eventually converge, but our progress will be very slow,
+as shown on the left figure.
+In contrast, if we pick too large of a step size,
+we run the risk of not converging at all.
+Theoretical convergence results have been derived
+for a variety of step sizes.
+And in practice, an effective option
+is to reduce the step size over time,
+as shown in the figure on the right.
+In particular, a common choice is
+to first pick some constant alpha
+and then set the step size at the i-th iteration
+to alpha divided by the product of the number of training
+points times the square root of the iteration number.
+Finally, let's discuss how we can
+perform gradient descent efficiently in a distributed
+setting.
+Starting with the vector update rule,
+we first note that each summand depends only
+on wi and on a single data point.
+Hence, if we share wi with all of our workers,
+then we can naturally cast this computation
+as a MapReduce operation.
+To see this, let's go back to our toy example
+where we have a cluster of three workers and a data set
+with six data points.
+Storing the data points requires O of nd storage.
+And we can distribute the storage across our workers.
+Next, in the map step, for each data
+point we compute its corresponding summand
+in the gradient descent update rule.
+This involves O of nd distributed computation
+to compute each of these summands.
+It also requires O of d local storage,
+since each worker must store its own local copy of wi.
+Then, in the reduce step, we add together these summands.
+We can also scale by the step size
+and subsequently compute w i plus 1 via subtraction with wi.
+Each of these summands is a d-dimensional vector,
+and hence we require O of d local computation
+in the reduce step.
+Similarly, we require local O of d space to store these vectors.
+Finally, we must repeat this process multiple times,
+since gradient descent is an iterative procedure.
+This entire process can be concisely described
+via the following Spark code snippet.
+In this snippet, we perform a fixed number of iterations
+as specified by numIters.
+And on each iteration, we first compute
+the iteration-specific step size and then compute the gradient
+via a MapReduce operation.
+Finally, we use the gradient descent update
+rule to update w.
+
+Now to conclude, gradient descent
+has some nice favorable properties.
+It is easily parallelized, and each iteration
+is cheap enough to scale to the big N, big D setting.
+Additionally, stochastic variance of gradient descent
+can be used to further speed up the algorithm.
+In the stochastic setting, we compute an approximate gradient
+direction at each iteration.
+That said, there are some drawbacks of gradient descent
+as well.
+First, it converges relatively slowly,
+especially when compared with a closed-form solution
+in the context of linear regression.
+However, when d is large enough such
+that the closed-form solution won't scale,
+this issue is hard to avoid.
+Second, performing gradient descent in parallel
+requires coordination and communication,
+which can be expensive in the distributed setting.
+In subsequent segments, we will discuss these communication
+considerations.

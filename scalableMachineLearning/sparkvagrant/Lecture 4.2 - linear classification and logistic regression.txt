@@ -1,0 +1,204 @@
+
+In this segment, we'll talk about linear classification
+and relate it to the problem of linear regression.
+We'll also introduce logistic regression,
+which is a particular type of linear classification model.
+As a reminder, classification is a supervised learning setting.
+And our goal is to learn a mapping from observations
+to discreet labels given a set of training examples.
+Spam classification is a canonical example
+of classification where the observations are emails
+and the labels are spam and not spam.
+Given a set of label to emails, we
+want to predict whether a new email is spam or not spam.
+Click-through rate prediction is another example.
+Here, our observations are user and publisher triples.
+Our labels are not-click and click.
+And given a set of labeled observations,
+we want to predict whether a new user ad publisher triple
+will result in a click.
+In fact, we really want to predict this
+at a more granular level using probabilities.
+But we'll discuss that in later segments.
+In this segment, we're interested in
+linear classification models.
+And to develop our understanding,
+we'll start with a review of linear regression.
+In linear regression, our key assumption
+is that there's a linear mapping between the features
+and the label.
+Assuming we have three features represented by x1, x2, and x3,
+this means that we assume that we can define y
+as a weighted sum of these features
+plus some offset value, which we denote by w0.
+Additionally, to account for this offset value,
+we can augment our feature vector
+by adding an additional feature that
+equals 1 for all observations.
+And then we can rewrite this linear mapping assumption
+as a scalar or inner product.
+As we previously discussed, using a linear mapping
+is attractive for several reasons.
+First, it is intuitive and mathematically simple.
+Second, it often works well in practice.
+And finally, we have the flexibility
+to introduce new features as we like.
+And we can thus increase the complexity
+of this model via the process of feature extraction.
+So the natural question is how can we extend these ideas
+to the classification setting.
+Let's assume we're trying to predict whether or not
+it will rain given three weather related
+features, in particular, temperature, cloudiness,
+and humidity.
+We can use the same feature representation, as
+with linear regression, including the one feature
+to multiply by an offset.
+But now we need to figure out how
+we can make class predictions.
+In particular, we'll be focusing in binary classification.
+So we want our predictions to ultimately be binary,
+for example, not rain versus rain, not spam versus spam,
+not click versus click.
+To achieve this goal, we can't directly
+use the linear regression model since linear regression
+predictions are real values rather than class predictions.
+But we can get around this issue by thresholding
+the linear regression prediction.
+So recall that the linear regression prediction is simply
+the dot product between the parameter
+vector and the feature vector.
+And we can set our classification prediction
+to be the sine of this dot product.
+What this rule says is that a w transpose x is positive,
+then our prediction y hat is 1.
+And a w transpose x is negative, our prediction is negative 1.
+And when w transpose x equals 0, we
+can arbitrarily choose the prediction
+to be 1 or negative 1.
+Another way to say this is that w transpose x equals 0
+is our decision boundary.
+Now let's look at an example to better understand
+what's going on.
+Imagine we have two features.
+And we are given a linear classifier.
+This classifier puts weight of 3 on the first feature and weight
+of negative 4 on the second feature.
+And it has an offset of negative 1.
+So how how does this linear classifier make predictions?
+Imagine we have a test point whose first feature equals 2
+and whose second feature equals 3,
+as is shown in the graph on the left of the screen.
+Also recall that we represent our point as a three
+dimensional vector with the first component
+of the vector equaling 1 to correspond
+with the offset in the linear model.
+Now, to compute our prediction, we simply
+take the dot product between our feature vector and our model.
+And we look at the sine of this resulting number.
+In our example, the dot product equals 7, which is negative.
+And thus, the prediction is negative 1.
+We'll denote the label as being negative 1
+by coloring the point red in the graph on the left.
+We can do something similar with a second test point
+whose first feature equals 2 and whose second feature equals 1.
+This time, the dot product of the feature vector
+and the model is positive.
+So the label is 1.
+And we color the point blue in the graph on the left.
+We can follow this procedure for two more arbitrary test points,
+visualizing them with the appropriate color based
+on the sine of their dot products.
+And if we repeat this exercise several more times,
+a pattern starts to emerge.
+In particular, we note that all points
+on one side of the decision boundary are red.
+And all points on the other side are blue.
+This decision boundary is defined by the equation w
+transpose x equals 0.
+
+So now we figured out how to adapt the linear regression
+scheme to return class predictions.
+But a related question is how do we evaluate these predictions.
+In the regression setting, we were dealing with real value
+predictions where we had some notion of closeness
+between the label and the prediction.
+So squared loss was a natural metric for evaluation.
+However, in the classification setting,
+our class labels are discreet.
+And perhaps the most intuitive thing we can do
+is to simply check whether the label and the prediction
+are equal.
+If they match, then we'll incur no penalty, or no loss.
+And if they differ, we'll incur a loss equal to 1.
+And this is what we call by the 0-1 loss.
+So let's see what this looks like visually.
+And to do this, we need to introduce some notation.
+Remember that we're defining our labels
+to be either negative 1 or 1.
+Additionally, our predicted label
+is determined by the sine of w transpose x.
+Hence, if our prediction matches the true label,
+then either y is positive and w transpose x is positive.
+Or y is negative and w transpose x is negative.
+In both cases, the product of y times w
+transpose x will be positive.
+In contrast, when the true and predicted labels don't match,
+this product must be negative.
+So we can define z to equal this product.
+And when z is positive, we have a good prediction.
+And when z is negative, we have a bad prediction.
+Having defined z, we can now visualize the 0-1 loss, which
+looks like a step function.
+Whenever z is greater than 0, we incur no loss.
+And whenever z is negative, we incur a constant loss of 1.
+So now we seem to have all the pieces in place
+to learn a model.
+Specifically, as before, we're making a linear assumption
+using the sign of a dot product as our prediction.
+And we're using the 0-1 loss to evaluate these predictions.
+So given a set of end training points,
+we then want to find a parameter vector
+w that minimizes the 0-1 loss over our training points.
+Unfortunately, this is not a convex optimization problem
+as a 0-1 loss is not a convex function.
+And thus, this is a hard problem to solve.
+But all hope isn't lost, because instead of using the 0-1 loss
+in our optimization problem, we can use a surrogate loss that
+is convex and also provides a good approximation to 0-1 loss.
+There are many potential surrogate losses
+that we can choose from.
+For instance, the hinge loss is used to define the SVM model.
+The exponential loss is used to describe the Adaboost model.
+And the logistic loss is used to define the logistic regression
+model.
+
+In particular, we'll focus on logistic regression
+and on the logistic or log loss.
+By replacing the 0-1 loss with the logistic loss
+in the previous optimization problem,
+we can now define the logistic regression optimization
+problem.
+The goal in logistic regression is
+to find a linear model that minimizes
+the sum of the logistic losses over the training points.
+Unlike linear regression, this problem
+has no closed form solution.
+But it is a convex optimization problem.
+And as a result, a standard method
+for solving logistic regression is via gradient descent.
+We use the same high level update rule
+as we did for linear regression.
+But of course, the form of the gradient
+is different because we're using a different loss function.
+The specific form of the update is
+shown on the bottom right of the slide.
+Finally, similar to ridge regression,
+we can use a regularized version of logistic regression.
+In this regularized version, we're
+trading off between two terms.
+The first is the log loss on the training data.
+And the second is the model complexity.
+As in the case of ridge regression,
+we introduce a user specified hyper parameter, lambda,
+to determine the trade-off between these two terms.

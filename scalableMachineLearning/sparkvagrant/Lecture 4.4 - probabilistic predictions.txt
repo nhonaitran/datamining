@@ -1,0 +1,191 @@
+
+In this segment, we'll talk about how we can
+use probabilistic predictions.
+We'll first talk about how we can incorporate domain
+knowledge when thresholding our probabilities to generate
+class predictions.
+We'll then talk about how we might want to work directly
+with probabilistic predictions and how in such cases,
+logistic loss is an appropriate evaluation metric.
+In the previous segment, we discussed
+how we can convert probabilistic predictions
+to class predictions by thresholding them.
+If we look at our rain example, and if we
+assume a threshold of 0.5, then a conditional probability
+prediction of 0.05 would lead to a class prediction of y hat
+equals 0.
+And a conditional probability prediction of 0.9
+would lead to a class prediction of y hat equals 1.
+We also showed that in the context of logistic regression,
+using a threshold value of 0.5 led to the same decision
+boundary as simply looking at the sine of w transpose x,
+or of a dot product between our model and our features.
+But when we have access to fine-grained probabilistic
+predictions, we don't necessarily
+have to set our threshold to 0.5.
+Let's consider a spam detection example to see this point.
+And suppose that we have a trained model that
+gives us conditional probabilities
+that an email will be spam.
+Now, imagine that we've made an incorrect spam prediction.
+We can potentially make two types of mistakes.
+The first type, which we call a false positive,
+occurs when we classify a legitimate email as spam.
+The second type, which we call a false negative,
+occurs when we classify a spam email as a legitimate one.
+In this application, it's reasonable to argue
+that false positives are more harmful than false negatives.
+In other words, users will likely
+be more frustrated if an email from a close friend
+gets lost in a spam filter than if a spam
+email doesn't get filtered and shows up in their inbox.
+These two types of errors are typically
+at odds with each other.
+Or, in other words, we often trade off one type of error
+for the other.
+In our spam application, we might
+be willing to accept a few more false negatives in exchange
+for reducing the number of false positives.
+When working with probabilistic predictions,
+we can make these trade-offs by adjusting our threshold.
+Using a higher threshold leads to a classifier
+that is more conservative in identifying an email as spam.
+
+Assuming we want to change our threshold,
+how can we determine the best choice?
+One natural way to do this is to use a ROC plot, which
+visualizes the trade-offs we make
+as we change our threshold.
+In particular, a ROC plot focuses on two standard metrics
+that are often at odds with one another, namely
+the false positive rate, or FPR, and the true positive rate,
+or TPR.
+Using our spam detection application
+as a running example, we can interpret
+FPR as the percentage of legitimate emails
+that are incorrectly predicted as spam.
+And we can view TPR as the percentage of spam emails
+that are correctly predicted as spam.
+In an ideal world, we would have an FPR of 0 and a TPR of 1.
+An FPR of 0 would mean that none of our legitimate emails
+were incorrectly classified as spam.
+And a TPR of 1 would mean that all spam emails were correctly
+classified as spam.
+Therefore, having both an FPR of 0 and a TPR of 1
+would imply a perfect classifier.
+In a ROC plot, this corresponds to being
+on the top left of the plot.
+As a second baseline, imagine that we flipped a fair coin
+to generate each of our predictions, in which
+case, on average, half of our emails
+would be classified as spam, and half would be non-spam.
+In this case, both the FPR and the TPR would equal 0.5 More
+generally, we could flip a biased coin,
+or, in other words, a coin that lands on
+heads with some probability P. And in this case,
+the dotted line in the ROC plot visualizes
+the results of making these random predictions,
+with each point on this dotted line corresponding
+to a different value of p.
+Now that we've established these baselines,
+let's see how we can use a ROC plot to evaluate a classifier.
+Imagine that we've trained a classifier that
+returns probabilistic predictions, as in the case
+of logistic regression.
+Let's also assume that we're using a validation set
+to find a good threshold.
+Then we can use our classifier to generate
+conditional probabilities for observations in our validation
+set.
+And once we have these probabilities,
+we can generate a ROC plot by varying
+the threshold we use to convert these probabilities to class
+predictions, and computing FPR and TPR
+at each of these thresholds.
+Our threshold can range from 0 to 1,
+and each point on the ROC plot corresponds
+to a distinct threshold.
+For instance, in one extreme, where our threshold equals 0,
+we interpret all positive probability predictions
+as being spam.
+Or, in other words, we aggressively
+predict everything to be spam.
+By doing so, our TPR equals 1, which is good.
+But our FPR is also equal to 1, which is bad.
+In the other extreme, we can set our threshold
+to equal 1, in which case we never classify anything
+as spam.
+In this conservative setting, we never have any false positives,
+and thus our FPR is 0, which is a good thing.
+But now our TPR is also 0, which is a bad thing.
+And in practice, we trade off TPR and FPR
+in an application-specific way.
+For instance, in our spam application,
+since we're particularly concerned about classifying
+a legitimate email as spam, we might
+be willing to tolerate at most a 10% false positive rate.
+And with this constraint in mind,
+we can then pick the threshold that maximizes the TPR, given
+that FPR can be at most 10%.
+We've seen that ROC plots are a powerful tool for choosing
+the most appropriate threshold when we ultimately
+need to make class predictions.
+However, in some cases, we might not
+want to make class predictions at all.
+Instead, we might want to work directly with probabilities
+as they provide more granular information.
+For instance, let's go back to our clickthrough rate
+prediction example.
+As we know, click events are rare.
+And as a result, our predicted click probabilities
+will be uniformly low.
+So unless we picked some very low threshold,
+the vast majority of our class predictions
+will all be y hat equals 0.
+However, in this application, we're
+not interested in the class prediction, but rather
+the probabilities themselves.
+We want to know which events are most likely to occur
+and how much more likely certain events are relative to others.
+We may also want to combine these predictions
+with other information and thus don't want a threshold,
+as we'll lose this fine-grained information by doing so.
+In such cases, it makes sense to work directly
+with the probabilities and to evaluate our predictive models
+based on the quality of these probabilities
+rather than on their class predictions.
+In these cases, it makes sense to use
+the logistic loss for evaluation rather than the 0-1 loss.
+Let's take a look at the logistic loss
+to better understand why this is the case.
+Note that we initially introduced logistic loss
+when assuming that the labels were either
+equal to negative 1 or 1.
+Here, however, we're using our new notation,
+where the labels are either 0 or 1, which
+makes the logistic loss easier to interpret.
+With our new notation, the logistic loss
+takes in two values as parameters.
+The first parameter is the probabilistic prediction,
+which is a number ranging from 0 to 1.
+And the second is the true label,
+which is a discrete value that either equals 0 or 1.
+We can define the logistic loss with different expressions
+depending on the value of y.
+First, let's consider the case when y equals 1.
+In this case, we want the predicted probability
+to be as close to 1 as possible.
+The blue line shows the behavior of a logistic loss
+in this setting.
+And, as we can see, we incur no loss or penalty
+when the probability equals 1, and we
+incur an increasingly large penalty as the probability
+moves away from 1.
+We see an analogous situation when y equals 0,
+where the loss equals 0 if the predicted probability equals 0,
+and we suffer an increasing penalty or loss
+as the probability increases.
+So in comparison to the 0-1 loss, which either returns
+a penalty of 0 or 1, the log loss
+is a more fine-grained metric for evaluating the accuracy
+of probabilistic predictions.

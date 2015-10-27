@@ -1,0 +1,129 @@
+
+In this segment we'll begin our discussion
+about PCA, the most commonly used method
+for dimensionality reduction.
+In particular, we'll provide high level intuition
+about the problem that PCA aims to solve.
+In this and subsequent segments we'll
+be focusing on dimensionality reduction.
+Imagine we're trying to understand some underlying
+phenomenon, and to do so we measure various quantities
+potentially related to it.
+If we knew exactly what to measure in advance,
+we might be able to find some simple relationships
+in our data.
+But we typically don't, and so we often
+measure anything that might be relevant, and often
+measure redundant signals.
+As a toy example, we can consider
+measuring shoe sizes using two different but equivalent
+skills.
+Additionally, after collecting our data
+we typically represent it based on how
+it was initially gathered, or how it is naively stored.
+For instance, images are typically represented
+as a collection of pixels.
+And this is typically our starting point
+for brain imaging data, or for various other computer vision
+tasks.
+As another example, when working with sensor data
+we understandably work with the data captured by our sensors.
+In both of these examples there is often
+innate physical structure behind the information
+we are capturing.
+But it can be hard to identify the structure given
+our initial representation.
+Given that our input data may be redundant and convoluted,
+it's natural to want to describe the data using
+a different, and in some sense better, representation.
+This representation may allow us to more clearly identify
+interesting patterns in the data.
+
+So how can we specify what it means to find a better
+representation?
+In the next series of segments we'll
+discuss how we can use PCA to achieve this goal.
+To get some intuition for PCA let's return
+to the shoe size example.
+Let's say we want to gather shoe sizes for several people
+to find some trends associated with shoe size.
+Let's also imagine that we know very little about shoe size.
+And so when we go to a shoe store
+we notice that the store uses two measurements.
+So we measure both of them, since we
+want to collect all potentially relevant data about shoe size.
+We can then plot the data we've collected as shown
+on the right of the screen.
+The plotted data unsurprisingly shows a strong correlation
+between the two measurements.
+But the data doesn't lie perfectly on the y=x line
+because we made some errors during our collection process.
+Given this data how can we potentially find
+a better representation?
+In this case it seems reasonable to aim to represent
+this data in one dimension.
+To do this, one idea would be to pick a direction in 2D,
+and project our points on to the single direction.
+But what line should we pick?
+What we see in the plot here is one possible choice.
+We could use this line if we really wanted to,
+but when projecting points onto this line
+the projections are all bunched together.
+And note here that the projection
+of each original point onto this line
+is simply the point on the line that
+is closest to the original point in terms of Euclidean distance.
+Given these bunched up projections,
+this line doesn't seem like a very good option.
+Here's another choice, and intuitively it
+seems like a better option.
+Looking at the projections we see
+that the points projected onto this line all
+seem close to their initial representations, which
+is a good sign.
+And we can formalize this idea via the idea of reconstruction
+error.
+Specifically, our goal is to minimize
+the Euclidean distances between our original points
+and their projections.
+One view of PCA in fact is as the solution to this problem.
+In this example using the reconstruction error
+interpretation, we start with two-dimensional data
+which therefore has two degrees of freedom.
+PCA aims to reconstruct the original two-dimensional data
+via two-dimensional data that has
+only a single degree of freedom, since each new point
+must lie on the blue line.
+PCA finds the projections that minimize
+the length of the black lines between the original points
+in red, and the projected points in blue.
+It's worth noting that although the PCA picture looks
+similar to the picture we've discussed previously
+for linear regression, the two algorithms are quite different.
+Linear regression aims to predict y from x.
+As shown in the picture on the left,
+we have a single feature, not two features,
+as in the PCA picture.
+We fit a line to the single feature
+in order to minimize distances to y.
+And thus we compute errors as vertical lines.
+Again, although the pictures look similar,
+the two algorithms are very different.
+Now let's think about another way we could potentially
+better represent our data.
+We do this by noting that in order to identify patterns
+in our data, we often look for variation across observations.
+So it seems reasonable to find a succinct representation
+that best captures variation in our initial data.
+In particular, we could look to explain our data via it's
+maximal directions of variance.
+Let's look at some visualizations
+to see what this means.
+If we consider the direction shown
+by the arrow on the slide, we see
+that the variation is quite small in this direction.
+In contrast, if we look at the direction shown
+by this new arrow we see a large degree of variation.
+It turns out that the PCA solution represents
+the original data in terms of it's directions
+of maximal variation.

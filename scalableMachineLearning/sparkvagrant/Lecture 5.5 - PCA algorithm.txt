@@ -1,0 +1,66 @@
+
+In this segment, we'll review the concept
+of orthonormal vectors and also describe
+an algorithmic interpretation of PCA.
+To start our discussion, let's review
+the concept of orthogonal and orthonormal vectors.
+Orthogonal vectors are simply perpendicular vectors,
+and one nice property of orthogonal vectors
+is that their dot product always equals 0.
+Let's look at an example to gain some intuition.
+Consider the following two dimensional vectors.
+Here a is a unit vector in the direction of the x-axis
+while b is a unit vector in the direction of the y-axis.
+Note that a unit vector is simply
+a vector whose Euclidean norm equals one.
+The vectors a and b are clearly perpendicular or orthogonal,
+and we see that their dot product equals 0.
+The vector d is also in the direction of the x-axis
+though it does not have unit norm.
+However, it is still orthogonal to the vector b.
+Finally, the vector c is in the direction of y equals x,
+and it isn't orthogonal to any of the other three factors.
+Next, let's talk about the related concept
+of orthonormal vectors.
+These are vectors that are orthogonal and also
+have unit norm.
+Going back to our example, since a and b are
+both unit norm and orthogonal, they
+are also orthonormal vectors.
+In contrast, b and d, even though they're orthogonal,
+are not orthonormal since the Euclidean norm
+of d is greater than one.
+Now that we're equipped with a better understanding
+of these concepts, we could discuss
+the interpretation of PCA as an iterative algorithm.
+First, let's imagine that we're in the one dimensional setting,
+or in other words, that k equals one.
+In this case, we simply want to find the direction
+of maximal variance.
+Once we have this direction, we can project our data
+onto this direction and the location
+of points along this direction are the new one dimensional
+representation.
+So for instance, in the picture on the right of a slide,
+since all the blue points run along
+the blue line the location of the blue points along this line
+define a one dimensional representation of the data.
+More generally, imagine that we want a k dimensional
+representation of our data.
+To do this we can imagine taking the following iterative
+approach.
+At the i-th iteration we aim to find
+the direction of maximal variance in the data,
+subject to the constraint that this direction is of unit norm
+and that it is orthogonal to all directions we
+chose in previous iterations.
+We can then project our data onto this direction,
+and the locations along this direction
+become the i-th feature in our new representation.
+As a result of this algorithm, we
+have found k unit vectors that are pairwise orthogonal,
+and thus, these k directions are orthonormal.
+As we discussed previously, these directions
+are defined as the top k principal
+components of the data, and they equal the top k eigenvectors
+of the sample covariance matrix.

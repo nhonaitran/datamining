@@ -1,0 +1,176 @@
+
+In this segment, we'll discuss how OHE features can
+be high dimensional, which can lead both
+to statistical and computational challenges.
+We'll then introduce the technique
+of feature hashing, which can be used
+to reduce the dimensionality of OHE features.
+In previous segments, we discussed the technique
+of One-Hot-Encoding, to convert categorical features
+into numeric ones.
+This technique creates a dummy feature for each category,
+and by doing so we avoid introducing
+spurious relationships in our numeric representation.
+However, a consequence of OHE features
+is that they drastically increase the dimensionality
+of our data, as the number of features in an OHE
+representation equals the total number of categories
+in our data.
+This is a major issue in the context of clickthrough rate
+prediction, as our initial user, ad,
+and publisher features include many names and a lot of text.
+OHE features can be problematic whenever
+we're working with text data.
+For instance, as we discussed earlier in the course,
+we often use a bag of words representation
+to represent documents with a vocabulary of words.
+There are over one million words in the English language alone,
+and thus the size of our vocabulary
+can be quite large, resulting in high dimensional
+representation.
+Additionally, we sometimes would like
+to create a richer representation of our text data
+by considering all pairs of adjacent words,
+using a so-called bigram representation.
+This bigram representation is similar in spirit
+to the idea of quadratic features discussed earlier
+in the course.
+Bigram representations of text documents
+result in even larger feature dimensionality.
+
+High dimensionality features can cause
+problems, both statistically and computational.
+Statistically, we typically need more observations
+when we are learning with more features.
+And even though we usually have many observations
+in large scale settings, it is still harder
+to learn models with more features.
+Computationally, larger feature vectors
+require increased storage and computation,
+with communication in particular being the bottleneck.
+For instance, when training linear models
+we're learning d dimensional parameter vectors.
+And when training with gradient descent,
+we need to communicate the current parameter
+factor after each iteration.
+For large d, this can become an expensive process.
+Given these issues, it would be nice
+if we could reduce the dimension of our OHE features.
+The first idea that we might have
+is to simply discard rare features.
+For instance, in a bag of word representation,
+we could remove words that appear very infrequently
+throughout our training set.
+However, infrequent features are not necessarily uninformative,
+and this approach might lead us to throw out
+useful information.
+Additionally, even if we discard rare features,
+we still must first compute the full OHE features,
+and creating the OHE dictionary can be particularly expensive.
+
+Feature hashing provides an alternative method
+for reducing the dimension of OHE features.
+By using hashing principles, we can
+create a lower dimensional feature representation
+and completely skip the process of creating an OHE dictionary.
+Feature hashing preserves the sparsity of OHE features,
+and is motivated by theoretical arguments.
+It's also worth noting that the feature hashing can
+be interpreted as an unsupervised learning
+method, which is performed as a pre-processing step
+for a downstream supervised learning task.
+Now, let's talk more about feature hashing.
+Hashing is a rich area of computer science,
+with hash tables being an important data
+structure for data lookup, and with hash functions having
+applications in cryptography.
+We won't discuss these details here,
+but we'll simply note that hash tables have a fixed
+number of buckets, and that hash functions map an object to one
+of these m buckets.
+In particular, hash functions are
+designed to efficiently compute this mapping
+and to distribute objects fairly evenly across buckets.
+In the context of feature hashing,
+each feature category is an object,
+and we have fewer buckets than feature categories.
+So in contrast to the OHE dictionary,
+which is a one to one mapping between feature categories
+and dummy features, feature hashing uses a many to one
+mapping between feature categories and buckets.
+In other words, different categories
+are bound to collide or map to the same bucket.
+These bucket indices are what we define as our hashed features.
+So now let's consider a concrete example
+to understand how feature hashing works.
+We'll use the same categorical animal data
+set that we did earlier, which involves
+three categories, animal, color, and diet,
+in seven total feature categories.
+Suppose the number of buckets equals m equals 4,
+and that we've already selected a hash function to map future
+categories to buckets.
+If we consider the first data point,
+A1, we see that the hash function
+maps the two-pole animal, comma, mouse, to bucket three,
+and it maps the two-poll pull color, black, to bucket two.
+Since we have four buckets total,
+this leads to a feature vector of length 4 for A1,
+with the second and third hashed features equal to one.
+We can do something similar with the second data point, A2,
+and we see that the two poles, animal, comma, cat,
+and color, comma, tabby, both map to bucket 0.
+This is an example of a hash collision.
+The mapping of the two-pole diet, comma, mouse,
+shows yet another example of a collision,
+as the two-pole color, comma, black previously
+mapped to bucket two, as well.
+Overall, this means that we represent
+A2 with the following four dimensional vector.
+Note here that we have a value of 2 in Feature 0,
+which is due to the fact that two of the categorical
+features for A2 both map to bucket 0.
+We also see a value of 1 in feature two.
+
+We can go through the same exercise for the third data
+point, A3, to obtain its hash feature representation.
+
+As we saw in this toy example, when we have more feature
+categories than we have buckets, we're bound to have collisions.
+And thus, arbitrary feature categories
+will be grouped together.
+It turns out that in spite of the slightly strange behavior,
+feature hashing has nice theoretical properties.
+In particular, many learning methods
+can be interpreted as relying on training data
+only in terms of pairwise inner products between the data
+points.
+In the context of OHE features, if we're
+going to approximate these OHE features with a more
+compact feature representation, then we
+want this compact feature representation
+to do a good job of approximating inner products
+computed on OHE features.
+And it turns out that under certain conditions,
+hashed features lead to good approximations
+of these inner products, theoretically.
+
+Moreover, hashed features have been used in practice
+and have resulted in good practical performance
+on various text classification tasks.
+And so in summary, hash features are a reasonable alternative
+to OHE features.
+Hash features can also be computed
+in a fairly straightforward fashion in a distributed
+setting.
+Once we've decided on a hash function,
+we first need to apply this function to the raw data.
+This is a local computation requiring no communication,
+and hash functions are generally fast and computable.
+As shown in the Spark code snippet,
+this step can be written by a single map expression.
+In the second step, we can store hashed features
+in a sparse representation, in order to save storage space
+and reduce the computational burden in subsequent steps
+of our pipeline.
+This step can also be expressed as a single map operation.

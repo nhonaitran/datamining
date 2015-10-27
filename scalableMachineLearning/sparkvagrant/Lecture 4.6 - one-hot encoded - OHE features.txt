@@ -1,0 +1,123 @@
+
+In this segment, we'll go through an example of how
+to compute one-hot encoded, or OHE features,
+and we'll then discuss how to efficiently store
+these OHE features.
+Consider a categorical animal data set
+comprised of three features.
+The first is the type of animal, and the categories here
+are bear, cat, and mouse.
+The second is the animal's color,
+and the categories are black and tabby.
+The third feature is the animal's diet,
+and the categories are mouse and salmon.
+Note that this third feature is optional,
+meaning that some observations won't have
+any value for this feature.
+And also note that the category "mouse"
+appears in two features, in particular, the animal
+and the diet feature.
+Now let's look at the data set itself,
+which is three observations.
+The first observation, A1, is a black mouse
+that has no value for the diet feature,
+as indicated by the dash.
+The second observation is a tabby cat
+whose diet consists of mice.
+The third feature is a black bear that eats salmon.
+So our question is how can we compute OHE features
+from the data set.
+Creating OHE features is a two-step process
+where the first step involves creating an OHE dictionary.
+In particular, recall that we have
+three categorical features, with the first feature having three
+categories, and the second two features each having
+two categories.
+So in total, there are seven distinct categories
+across these three features.
+And thus we need seven binary dummy variables
+to represent them using a one-hot encoding.
+And note that the mouse category is
+distinct for the animal and the diet features.
+So our first goal is to create a dictionary that
+maps each category to a dummy feature.
+We have seven categories and seven dummy variables,
+and we want to create a one-to-one mapping.
+We describe each category is a tuple containing the feature
+name and the categorical value.
+So a tuple, animal, bear, is one such category,
+and we can map it to the dummy variable 0.
+Similarly, we can map the tuple animal, cat
+to the dummy variable 1.
+And we can perform a similar process
+for all of the other categories.
+And note that by defining each category
+as a tuple, the tuples animal, mouse and diet,
+mouse are treated distinctly, which
+is what we want to be doing.
+
+Now we have our OHE dictionary, we can create OHE features.
+To do this, we simply map each non-numeric feature
+to its binary dummy feature.
+So for instance, the numeric representation of A1
+is 0, 0, 1, 1, 0, 0, 0.
+Let's see how we arrive at this representation.
+We see that A1's animal feature equals mouse.
+And in our OHE dictionary, this corresponds
+to the tuple animal, mouse.
+And our dictionary tells us that this tuple corresponds
+to the dummy feature 2.
+As a result, we can set the second feature equal to 1.
+And note that we're cutting starting from 0
+or using a zero-based numbering system.
+Similarly, A1's color feature is black.
+So again, we look up in our OHE dictionary,
+and we see that this corresponds to dummy feature 3.
+So as before, we can now set the corresponding dummy feature,
+in this case feature 3, equal to 1.
+
+Now that we've walked through an example of how
+to create OHE features, let's talk
+about how we can store them.
+Note that for a given categorical feature, at most
+a single OHE dummy feature is non-zero.
+In other words, most of our OHE features are equal to 0,
+or our OHE features are sparse.
+When storing OHE features, we can take
+advantage of this sparsity.
+The standard way to represent features
+is via a dense representation, where we store all numbers
+regardless of their value.
+So for instance, in this example,
+we would store each of the seven values
+in A1's feature representation as a double.
+However, an alternative way to store our features
+is to store the indices and values for all non-zero entries
+and assume that all other entries equal 0.
+So back to our A1 example, this would
+mean that we would store two tuples or a total of four
+values.
+In each of these tuples, the first component
+is the feature index, and the second component
+is the value of this feature.
+
+When our data is sparse, using a sparse representation
+can lead to a dramatic savings, both in terms
+of storage and computation.
+So let's consider an example of storing
+a data set with 10 million observations and 1,000
+features.
+And let's assume that on average, 1% of the features
+are equal to 0.
+In our standard dense representation,
+we would store each number in this matrix using
+a single double, and this leads to a total
+of 80 gigabytes of storage.
+In contrast, using a sparse representation,
+we could represent each non-zero entry via two doubles, one
+to store the value and the other to store the index
+or location of this feature.
+In our example, this would lead to a 50x savings in storage.
+This more compact representation would also directly translate
+into computational savings when performing
+matrix operations, such as multiplies or inversions.

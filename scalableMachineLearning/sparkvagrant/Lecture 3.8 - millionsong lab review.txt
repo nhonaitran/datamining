@@ -1,0 +1,46 @@
+
+In this segment, we'll provide a preview
+of what you'll be doing in your Spark coding lab this week.
+The goal of the lab is to implement a regression pipeline
+for predicting a song's release year from audio features,
+and to do so using the various tools we discussed
+in this week's lecture.
+The raw data consists of a subset of the Millionsong
+Dataset from the University of California, Irvine, Machine
+Learning Repository.
+During the lab, you will explore the raw features,
+process the labels to make them more interpretable,
+and visualize the raw data.
+You'll then split the data into training, validation,
+and test data sets.
+After you've done this, you'll need
+to perform feature extraction to feed into a supervised learning
+model.
+At first, you'll use the raw features, and towards the end
+of the lab, you'll compute quadratic features
+and compare the results.
+
+Given a set of features-- either the initial features
+or the quadratic features-- you will
+train various linear regression models.
+You first implement gradient descent
+from scratch for linear regression,
+and then use the MLlib implementation
+for ridge regression.
+You will also visualize the performance of this training
+process to gain intuition.
+
+Since you'll be using ridge regression,
+you'll need to search for a good value for its regularization
+hyperparameter, and you will use grid search
+to identify an appropriate value.
+You will evaluate all models using RMSE
+and visualize the grid-search process
+to better understand the hyperparameter search space
+that you're exploring over.
+Finally, you will evaluate the final model using RMSE
+and compare its accuracy to that of a simple baseline that
+always predicts the average song year from the training data.
+The final model you train could, in theory,
+be used to make some predictions for new songs,
+but this won't be explored as part of this lab.

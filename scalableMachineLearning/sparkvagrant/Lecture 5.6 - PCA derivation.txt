@@ -1,0 +1,124 @@
+
+In this segment, we'll derive the PCA solution
+in the one-dimensional setting or in other words, when
+k equals 1.
+Recall that a covariance matrix has an eigendecomposition,
+which means it can be written as the product of its eigenvectors
+and eigenvalues.
+The eigenvectors are stored by matrix U
+and the eigenvectors are sorted by their eigenvalues, which
+are real numbers.
+In particular, the eigenvectors of a covariance matrix
+are defined as the vectors that when
+left multiplied by the covariance matrix return
+the same vector scaled by some constant.
+In other words, Cxu equals lambda u.
+This constant lamba is the associated eigenvalue.
+Additionally, by definition we assume that eigenvectors
+have unit norm.
+As a toy example, consider of a two-dimensional identity
+matrix in the vector 1, 0.
+Left multiplying this vector by the identity matrix
+returns the same vector.
+Hence, 1, 0 is an eigenvector of the two dimensional identity
+matrix, and its corresponding eigenvalue is 1.
+Now, let's recall the PCA formulation
+that we previously discussed.
+We start with our original d dimensional data represented
+by the matrix X and we'll assume that this data is centered.
+Our goal is to find a lower-dimensional
+representation of this data, and the matrix Z
+stores this low dimensional representation Additionally,
+we assume a linear relationship between X and Z
+and aim to find the principal components of our data, which
+are stored by the matrix P. We want
+to solve the optimization of the space of d times k matrices
+by finding the p that satisfies particular variance
+and covariance constraints.
+In this segment, in order to derive the PCA solution,
+we'll focus on the simpler setting where
+we aim to find a one-dimensional representation
+or in other words, when k equals 1.
+By doing so are lower-dimensional
+representation is simply the n-dimensional vector z.
+Hence, we aim to find a single principle component represented
+by the dimensional vector p.
+Now, let's note of the variance of
+this low-dimensional representation as sigma Z
+squared.
+By noting that our original data is assumed to be centered
+and using the standard definition of variance,
+we can see that this variance simply
+equals the square Euclidean norm of the vector z.
+In the k equals 1 setting, we simply
+want to find the direction that maximizes
+this variance of the resulting one-dimensional representation.
+Note that we've also required the resulting principal
+component to be of unit norm.
+And we do this, because the problem
+is it will specified otherwise as we could always
+increase the magnitude of the vector p
+to increase the variance.
+In other words, if we found the direction of max variance,
+we could multiply that direction by an arbitrary constant
+to increase the variance of z.
+Thus, we need to restrict the magnitude of the vector p
+and the natural constraint to place on the problem
+is to set its Euclidean norm equal to 1.
+Now that we specify this optimization problem
+for the k equals 1 setting, let's
+see how we can simplify it.
+We'll first note that from the previous slide,
+that variance equals the square Euclidean norm of the vector z.
+Next, by noting the relationship between the Euclidean distance
+and the dot product, we can rewrite
+the variance as a dot product z transpose z.
+
+Due to the linearity assumption inherent in PCA,
+we can then express z as a product
+of x times p and substitute Xp for z in the expression
+z transpose z.
+Next, we can note the behavior of the transpose operation
+when applied to a product and in particular, Xp quantity
+transpose equals p transpose times X transpose.
+And we can also use the fact that matrix multiplication
+is associative, which means that we
+can remove the parentheses in our multiplicative expressions.
+Together, these facts tell us that the variance of z
+can be written as the product of terms involving p and X.
+And at this point, the X transpose X
+term that appears in the expression
+should look familiar to you.
+And in fact, aside from a constant factor n,
+we have shown that the variance of z
+equals p transpose times a sample covariance matrix times
+p.
+And it's important to note here that since we're
+working with a fixed sample of points,
+the value n is just a constant here
+and hence the direction p that maximizes the variance of z
+will also maximize the variance times any constant.
+As a result, we can ignore this constant n
+in our derivation moving forward.
+So overall, as a result of these simplification steps,
+we can now restate our goal, which
+is to find the unit norm d-dimensional vector that
+maximizes the expression at the bottom of the slide.
+At this point, we've nearly finished our derivation.
+In particular, if we recall the eigenvector equation
+from earlier in this segment, we can
+see that the vector u is an eigenvector of Cx
+if it is unit norm, and if Cxu equals lambda
+u for some constant lambda.
+Since u has unit norm, u transpose u equals 1,
+and we can multiply both sides of this original equation
+by u yielding the expression u transpose Cxu equals lambda.
+However, this is exactly the expression
+that we're aiming to optimize with u replaced for p.
+We also know the top eigenvector of the sample covariance matrix
+is the eigenvector with the largest eigenvalue,
+and thus this vector is the solution to the PCA problem
+when k equals 1.
+We can make similar arguments when k is greater than 1,
+which results in the PCA solution involving the top k
+eigenvectors of the sample covariance matrix.

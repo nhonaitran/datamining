@@ -1,0 +1,260 @@
+
+In this segment, we'll continue our discussion
+on distributed machine learning principles.
+Focusing on strategies to reduce communication costs.
+As we discussed previously, access rates
+fall sharply with distance.
+And we must take this communication hierarchy
+into consideration when developing parallel
+and distributed algorithms.
+In particular, we need to design algorithms
+that take advantage of the fact that parallelism
+makes our computation faster, while noting the disk
+and network communication slow us down.
+A natural way to leverage parallel processing,
+while minimizing communication, is to perform parallel
+and in memory computation.
+As persisting in memory reduces our communication burden.
+Persisting in memory is a particularly attractive option
+when working with iterative algorithms that
+read the same data multiple times,
+as is the case in gradient descent.
+In fact, iterative computation is
+quite common for several machine learning algorithms.
+
+As our data grows large though, a standard computing node
+likely won't be able to keep all the data in memory.
+One way to deal with this situation
+is to scale up the computing node
+and create a powerful multicore machine with several CPUs,
+and a huge amount of RAM.
+The strategies advantageous in that we
+can sidestep any network communication
+when working with a single multicore machine.
+However, these machines can be quite expensive
+as they require specialized hardware,
+and are thus not as widely accessible as commodity
+computing nodes.
+That said, multicore machines can indeed
+handle fairly large data sets, and they're
+an attractive option in many settings.
+However, this approach does have scalability limitations,
+as we'll eventually hit a wall when
+the data grows large enough.
+As an alternative approach, we can scale out and work
+in a distributed environment.
+Intuitively, we can work with a large number of commodity nodes
+and we can coordinate the efforts across these nodes
+by connecting them via a network.
+This approach can scale to massive problems.
+Since we're working with readily available commodity computing
+nodes, and can add additional nodes
+as our data grows in size.
+However, in this setting we must deal with network communication
+to coordinate the efforts of the worker nodes.
+As an example, let's look at the bar code
+snippet for gradient descent.
+Here we're performing numIters iterations of gradient descent.
+Our training data, stored in a RDD called train,
+can be quite large and is stored in a distributed
+fashion across worker nodes.
+In each iteration we need to read the training data in order
+to compute the great-- in order to compute the gradient update.
+A naive implementation would require
+us to store the data on each worker, on disk,
+and to read from disk on each iteration.
+However, we can drastically speed up our implementation
+by persisting this RDD in distributed memory across all
+of our iterations.
+Which allows us to read from memory, instead of disk
+when computing the gradient updates, updates
+on each iteration.
+This all said, in this example, we still
+need to commit-- we still need to communicate results
+from the map step for each worker, to the driver node.
+And this communication can be expensive.
+Where generally we would like to mitigate network communication
+as much as possible, while leveraging
+distributed computing.
+So how can we do this?
+To answer this, let's first consider what
+we might need to communicate.
+In a machine learning setting, we operate on raw data,
+we extract features, and we train
+models, which are represented via their prep--
+their parameters.
+We also create intermediate objects
+throughout the development of learning pipelines.
+We could potentially communicate any of these objects
+across the network.
+And in light of this observation a really simple strategy
+involve-- to reduce network communication,
+is to simply keep large objects local.
+In other words, we should design or distribute algorithms such
+that, whenever possible, we never
+have to communicate the largest objects.
+So to understand what's going on,
+let's consider some examples.
+First let's look at a linear regression in the big n
+and small d setting.
+As we previously discussed in the setting,
+we can solve the problem via a closed form solution.
+And doing this requires us to communicate
+O of d squared, intermediate data.
+The largest object in this example
+is our initial data, which we store in a distributed fashion
+and never communicate.
+Hence, this is an example of a data parallel setting, where
+we always compute locally on the data to minimize the commit--
+the communication burden.
+Next, let's consider the big n, big d case
+for linear regression.
+Here we use gradient descent to iteratively train our model
+and are again in a data parallel setting.
+At each iteration we communicate the current parameter vector
+wi and the required O of d communication
+is feasible even for fairly large d.
+Now let's consider ridge regression
+where both n and d are small.
+Since the data is small in this setting
+we can communicate it to all of the workers.
+Additionally, recall that when working with ridge regression,
+we need to train many models with different regularization
+parameters in order to find an appropriate setting
+for this hyperparameter.
+So we can loosely consider the model tier
+to be a collection of all of these regression
+models with different hyperparameter settings.
+If we train each model locally, on different worker
+nodes, and given our loose definition of a model,
+this is an example of a model parallel setting.
+Linear regression with big n and huge d
+is an example of both data and model parallelism.
+In this setting, since our data is large,
+we must still store it across multiple machines.
+We can still use gradient descent, or stochastic variance
+of gradient descent to train our model,
+but we may not want to communicate
+the entire d dimensional parameter
+vector at each iteration, when we have 10s,
+or hundreds of millions of features.
+In this setting we often rely on sparsity
+to reduce the communication.
+
+So far we discussed how we can reduce communication
+by keeping large data local.
+But a second relevant observation,
+is that learning methods are typically iterative,
+and we can reduce communication by reducing the number
+of required iterations.
+So let's see why this is the case.
+Distributed iterative algorithms was both compute
+and perform communication.
+And in a bulk synchronous, in Bulk Synchronous Parallel
+Systems or BSP systems like Apache Spark
+we strictly alternate between computation and communication,
+so that all worker nodes are synchronized.
+Hence each iteration of an iterative algorithm
+incurs some communication overhead.
+In order to take advantage of parallel computation,
+but reduce network cost, we'd like
+to design algorithms that compute more and communicate
+less.
+We would thus benefit if we could perform more computation
+on each iteration and as a result,
+reduce the total number of variations,
+and thus reduce the number of times we need to communicate.
+An extreme example of this principle,
+is a divide-and-conquer approach.
+In this approach we fully process each partition locally
+and only communicate the final result. Thus
+we only perform a single iteration
+and drastically reduce communication.
+The downside of this approach is that we
+obtain approximate results, in general.
+To better understand this, let's consider the process
+of training a linear regression model via gradient descent.
+As we see in the code snippet at the bottom of the slide,
+this process is iterative and on each iteration
+we must share the current parameter vector
+with all worker nodes.
+In contrast, let's consider the divide-and-conquer approach
+and let's assume that we've k workers.
+In this case, the divide-and-conquer approach
+involves training k independent linear regression models.
+Each one being trained locally on a worker,
+as denoted in the map partition step.
+In the reduce step, the workers then
+send their fully trained local models to the driver
+and these local models are combined.
+Perhaps via averaging.
+This process requires a single round of network communication
+and is much more communication efficient
+than standard gradient descent, but it
+is-- it's also not guaranteed to produce the same model, as
+if we trained a single model directly, using all the data.
+A less extreme option involves mini-batching.
+Although we don't train a local model
+to convergence as in the divide-and-conquer setting,
+we still aim to increase the amount
+of local computation on each iteration before communicating.
+Mini-batch approaches often return the same solution
+as standard approaches, though they
+can provide diminishing returns if we
+attempt to perform too much computation
+before communicating.
+Continuing with the example of gradient descent,
+let's compare this bar code snippets
+for standard gradient descent which we
+see on the bottom of the slide.
+And a mini-batch variant which we
+see on the middle of the slide.
+In parallel gradient descent, at each iteration
+each worker simply computes its contribution to the gradient
+and sends it back to the driver.
+In contrast, at the beginning of each mini-batch iteration,
+each worker starts with the same parameter vector,
+but then performs a few steps of gradient descent locally.
+After each of the k workers has performed its local updates,
+these workers then send their updated parameter vectors
+back to the driver and the driver
+combines these different models, perhaps via averaging.
+By performing work locally before--
+by performing more work locally before communicating,
+mini-batch algorithms can often reduce
+the total number of iterations required to converge.
+
+Another reason we would like to reduce the number of iterations
+has to do with the concept of latency.
+So far, when discussing communication costs,
+we focused on throughput, which measures how many bytes
+per second can be read.
+And we've seen that throughput for memory
+is much greater than that for disk or network.
+When only considering throughput,
+the cost of communicating a message
+is directly proportional to the size of the message.
+However, latency is a second aspect of communication
+that involves a fixed cost required
+to send any message, independent of its size.
+The table on the bottom left of the slide
+shows the latency cost for various types of communication.
+Network latency is quite large relative to memory latency.
+When taking into account latency,
+it's generally better to send a few large messages rather than
+many small messages.
+In the context of machine learning pipelines,
+we can take advantage of this observation
+by training multiple models simultaneously and batching
+their communication or combining their communication.
+In particular, when tuning hyperparameters,
+we must train several models.
+And training them together can reduce latency costs.
+In summary, we have presented three rules of thumb
+for distributed computing.
+The first states, that we should develop
+algorithms that are at most a linear in time and space.
+The second states that we should perform
+parallel and in-memory computation.
+And the third states that we should attempt to minimize
+network communication.

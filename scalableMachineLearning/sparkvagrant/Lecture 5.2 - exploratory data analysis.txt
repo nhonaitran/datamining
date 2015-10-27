@@ -1,0 +1,180 @@
+
+Welcome to the segment of the course on exploratory data
+analysis.
+Exploratory analysis is a broad field
+covering many topics in both machine
+learning and visualization.
+I'm going to introduce just a couple key concepts
+and techniques that are related to the analyses
+that you'll be doing in the lab.
+And for each one, I'll show you an example
+of a neuroscience application.
+This diagram shows a workflow common to many data analysis
+problems.
+We start with raw data, which is often very large.
+We usually want to process the data to extract simpler,
+more compact representations.
+We then perform analyses to identify patterns in the data,
+visualize and explore them, and hopefully derive
+insight which we can share.
+The excitement and challenge of data analysis,
+especially in science, is that we really
+know ahead of time exactly what analyses to perform.
+So we have to try many different approaches
+and use the results of each stage to inform the others.
+Believe it or not, almost all methods in data analysis
+fall into one of two categories.
+In the first category, supervised methods,
+we have two different kinds of data,
+usually either different variables
+or different measurements.
+Our goal is to derive a function that
+predicts one from the other, like predicting y from x.
+For example, we might want to predict
+the behavior of an animal from the activity
+pattern of its neurons.
+In contrast, unsupervised methods
+are about understanding the structure intrinsic to the data
+itself, usually just by analyzing
+one collection of measurements.
+Unsupervised methods are especially valuable in science,
+because until we understand the basic structure
+of our measurements, it might be hard to know
+what other variables to relate them to.
+Analyses of neuroscience data typically
+begin with a collection of time series.
+For example, a single time series
+for each of several neurons, as shown here.
+The smaller boxes in this diagram
+show different kinds of analyses that we
+might want to try on these data, including
+both supervised and unsupervised methods.
+For analyses like regression training at the bottom,
+we want to describe each time series
+as a function of some other variable.
+In contrast, for analyses like dimensionality reduction
+and clustering, we want to identify simpler, more
+compact representations of the time series data
+that either aid our understanding
+or provide useful input to other stages of analysis.
+In this segment, we're going to focus
+on dimensionality reduction and clustering.
+I'll give a very brief description of each one
+and then give an example of how it might be used
+in a neuroscience application.
+
+Clustering is a common method in exploratory analysis.
+In most cases, we perform clustering in order
+to take a complex collection of many data points
+and reduce it into a simpler representation.
+We specifically look for groups of data points,
+such as the points within each group
+are similar to one another, but the groups are different.
+We call these groups clusters.
+Describing the data in terms of clusters rather than
+the raw data can be informative, especially
+if the clusters are the more meaningful unit of measurement.
+As a visual example, clustering often
+begins with data points that live in a space.
+In this case, a two dimensional space.
+In the case shown here, although there are hundreds of points,
+they all come from just one of two different underlying
+sources.
+Clustering algorithms, for example, k-means clustering,
+tries to label which of two different sources
+each point belongs to, as shown on the right with the two
+different colors.
+
+Clustering is used in many aspects of neuroscience data
+analysis.
+One important example is the use of clustering
+to solve something known as the spike sorting problem.
+When we measure the activity of neurons
+using electrical recordings, we often
+measure signals across a collection of electrodes,
+as shown on the left.
+But the signals we measure, in the middle,
+reflect the activity of just a few individual neurons.
+We want to think about our signals
+in terms of neurons, not electrical channels.
+And many algorithms for identifying those neurons
+and the signals associated with them
+are essentially performing a kind of clustering.
+
+We're now going to talk about another exploratory method
+called dimensionality reduction, which
+includes a well-known analysis technique called PCA.
+Somewhat similar to clustering, the goal
+of dimensionality reduction is to reduce complex data
+into a simpler, more compact representation.
+These simpler representations can often
+elucidate the underlying pattern or structure of the data.
+Dimensionality reduction is rarely
+the final step in data analysis, but rather provides
+a starting point for further exploration.
+
+To introduce the concept of dimensionality reduction,
+we're going to consider a simple toy
+example involving shoe sizes.
+You probably know that stores sell
+shoes labeled by both American and European sizes.
+But these two measurements are actually perfectly correlated,
+and there's no fundamental difference between them.
+Instead, they're both different representations
+of the same underlying variable.
+If we consider an abstract size space,
+on the right, in which the true size lives,
+then we can think of both the American and European sizes
+as just different linear functions
+of that underlined space.
+If the size space ranges from one to two,
+American sizes are the result of multiplying by six,
+and European size are the result of multiplying by six
+and adding 33.
+
+When performing dimensionality reduction,
+we're just going in the opposite direction.
+We start with the data on the left
+and want to find the common space on the right.
+The same idea applies to understanding
+neuroscience data.
+Although we record the activity of many neurons simultaneously,
+it might be useful to think about all of those recordings
+as reflecting a common set of patterns in some simpler
+lower dimensional space.
+Just as with the shoe sizes, if all the different measurements
+we make are just linear functions of a common space,
+then we can use dimensionality reduction
+to go in the other direction and recover it.
+This idea is very old and appears
+across a variety of fields, not just neuroscience.
+In physics, for example, the space on the right
+is referred to as the state space of a system.
+A classic example of this technique in neuroscience
+comes from Kevin Briggman and colleagues
+who used dimensionality reduction to describe patterns
+in neural recordings from the nervous system of the leech.
+They started with recordings of activity for multiple neurons
+while the leech performed different kinds of behaviors,
+including both swimming and crawling.
+They then used dimensionality reduction, specifically PCA,
+to describe the activity of all the neurons
+during each behavior in a single three dimensional space.
+Here, those activity patterns on each trial
+are shown as lines or trajectories
+through the three dimensional space.
+And the colors indicate the behavior
+of the animal on that trial.
+We see that activity associated with the different behaviors--
+swimming and crawling-- occupy different parts of the space.
+And we also see that there was a single trial in green
+on which the leech seemed to initially
+be moving towards a swimming pattern
+but changed partway through towards a crawling pattern.
+This is a very cool phenomenon and probably would
+have been hard to identify simply
+by looking at the activity of hundreds of neurons.
+And that's why dimensionality reduction can be useful.
+But this kind of analysis is always just the beginning
+of a more detailed investigation into how exactly
+neural activity relates to behavior.
